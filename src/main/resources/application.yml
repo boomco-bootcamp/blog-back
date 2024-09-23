@@ -28,7 +28,7 @@ spring:
     username: postgres
     password: boomco1004
     hikari:
-      schema: study
+      schema: blog
 
 # Mybatis
 mybatis:
