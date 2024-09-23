@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lecture.study.biz.service.study.repo.StudyRepository">
+
+    <!--    스터디 정보 목록 조회 -->
+    <select id="selectStudyInfoList" parameterType="StudyReqVO" resultType="StudyResVO">
+        SELECT
+            A.stdy_id
+            , A.stdy_nm
+            , A.stdy_con
+            , TO_CHAR(A.stdy_st_dt, 'YYYY-MM-DD HH24:MI') AS stdy_st_dt
+            , TO_CHAR(A.stdy_en_dt, 'YYYY-MM-DD HH24:MI') AS stdy_en_dt
+            , A.stdy_st
+
+            , A.stdy_cat_id
+            , B.stdy_cat_nm
+
+            , A.del_yn
+            , A.rgsn_user_id
+            , RGSN.user_nm AS rgsn_user_nm
+            , A.rgsn_ts
+            , A.amnn_user_id
+            , AMNN.user_nm AS amnn_user_nm
+            , A.amnn_ts
+
+            , coalesce(C.stdy_views_cnt, 0) AS stdy_views_cnt
+            , coalesce(D.stdy_comment_cnt, 0) AS stdy_comment_cnt
+
+        FROM stdy_info_m A
+
+        /* 스터디 카테고리 정보 */
+        LEFT JOIN stdy_cat_info_m B ON B.stdy_cat_id = A.stdy_cat_id AND B.del_yn = 'N'
+
+        /* 스터디 방문자 목록 -> 방문자 수 */
+        LEFT JOIN (
+            SELECT stdy_id, COUNT(0) AS stdy_views_cnt FROM stdy_views_l GROUP BY stdy_id
+        ) C ON C.stdy_id = A.stdy_id
+
+        /* 스터디 댓글 목록 -> 댓글 수*/
+        LEFT JOIN (
+            SELECT stdy_id, COUNT(0) AS stdy_comment_cnt FROM stdy_comment_l GROUP BY stdy_id
+        ) D ON D.stdy_id = A.stdy_id
+
+        <if test="searchCon != null and !searchCon.equals('')">
+            /* 스터디 태그 목록 */
+            LEFT JOIN (
+                SELECT stdy_id
+                FROM STDY_TAG_L
+                WHERE 1 = 1
+                AND UPPER(stdy_tag_con) LIKE '%' || UPPER(#{searchCon}) || '%'
+                GROUP BY stdy_id
+            )  E ON E.stdy_id = A.stdy_id
+        </if>
+
+        /* 등록/수정 사용자 정보 */
+        LEFT JOIN stdy_user_info_m RGSN ON RGSN.user_id = A.rgsn_user_id
+        LEFT JOIN stdy_user_info_m AMNN ON AMNN.user_id = A.amnn_user_id
+
+        WHERE 1 = 1 AND A.del_yn ='N'
+
+        <if test="stdyCatId != null and !stdyCatId.equals('')">
+            AND A.stdy_cat_id = #{stdyCatId}
+        </if>
+
+        <if test="searchCon != null and !searchCon.equals('')">
+            AND (
+                    UPPER(A.stdy_nm) LIKE '%' || UPPER(#{searchCon}) || '%'
+                    OR
+                    E.stdy_id IS NOT NULL
+                )
+        </if>
+
+        <if test="orderType != null and !orderType.equals('')">
+            <choose>
+                <when test='orderType.equals("desc")'>
+                    ORDER BY A.rgsn_ts DESC
+                </when>
+                <when test='orderType.equals("view")'>
+                    ORDER BY coalesce(C.stdy_views_cnt, 0) ASC
+                </when>
+                <when test='orderType.equals("reply")'>
+                    ORDER BY coalesce(D.stdy_comment_cnt, 0) ASC
+                </when>
+            </choose>
+        </if>
+
+        LIMIT #{record} OFFSET (#{page} - 1)
+    </select>
+
+    <!--    스터디 정보 목록 총 카운트 -->
+    <select id="selectStudyInfoTotal" parameterType="StudyReqVO" resultType="int">
+        SELECT COUNT(0)
+
+        FROM stdy_info_m A
+
+        <if test="searchCon != null and !searchCon.equals('')">
+            /* 스터디 태그 목록 */
+            LEFT JOIN (
+            SELECT stdy_id
+            FROM STDY_TAG_L
+            WHERE 1 = 1
+            AND UPPER(stdy_tag_con) LIKE '%' || UPPER(#{searchCon}) || '%'
+            GROUP BY stdy_id
+            )  E ON E.stdy_id = A.stdy_id
+        </if>
+
+        WHERE 1 = 1 AND A.del_yn ='N'
+
+        <if test="stdyCatId != null and !stdyCatId.equals('')">
+            AND A.stdy_cat_id = #{stdyCatId}
+        </if>
+
+        <if test="searchCon != null and !searchCon.equals('')">
+            AND (
+                UPPER(A.stdy_nm) LIKE '%' || UPPER(#{searchCon}) || '%'
+                OR
+                E.stdy_id IS NOT NULL
+            )
+        </if>
+    </select>
+
+    <!--    스터디 상세 정보 조회    -->
+    <select id="selectStudyInfo" parameterType="string" resultType="StudyResVO">
+        SELECT
+            A.stdy_id
+            /* 이전 글 ID - 정렬 조건 : 글 등록 순 */
+            , (
+                SELECT previous_stdy_id
+                FROM (SELECT stdy_id, LAG(stdy_id) OVER (ORDER BY rgsn_ts DESC) AS previous_stdy_id FROM stdy_info_m)
+                WHERE stdy_id = A.stdy_id
+            ) AS previous_stdy_id
+            /* 다음 글 ID - 정렬 조건 : 글 등록 순 */
+            , (
+                SELECT next_stdy_id
+                FROM (SELECT stdy_id, LEAD(stdy_id) OVER (ORDER BY rgsn_ts DESC) AS next_stdy_id FROM stdy_info_m)
+                WHERE stdy_id = A.stdy_id
+            ) AS next_stdy_id
+
+            , A.stdy_nm
+            , A.stdy_con
+            , TO_CHAR(A.stdy_st_dt, 'YYYY-MM-DD HH24:MI') AS stdy_st_dt
+            , TO_CHAR(A.stdy_en_dt, 'YYYY-MM-DD HH24:MI') AS stdy_en_dt
+            , A.stdy_st
+
+            , A.stdy_cat_id
+            , B.stdy_cat_nm
+
+            , A.del_yn
+            , A.rgsn_user_id
+            , RGSN.user_nm AS rgsn_user_nm
+            , A.rgsn_ts
+            , A.amnn_user_id
+            , AMNN.user_nm AS amnn_user_nm
+            , A.amnn_ts
+
+            , coalesce(C.stdy_views_cnt, 0) AS stdy_views_cnt
+            , coalesce(D.stdy_comment_cnt, 0) AS stdy_comment_cnt
+
+        FROM stdy_info_m A
+
+        /* 스터디 카테고리 정보 */
+        LEFT JOIN stdy_cat_info_m B ON B.stdy_cat_id = A.stdy_cat_id AND B.del_yn = 'N'
+
+        /* 스터디 방문자 목록 -> 방문자 수 */
+        LEFT JOIN (
+            SELECT stdy_id, COUNT(0) AS stdy_views_cnt FROM stdy_views_l GROUP BY stdy_id
+        ) C ON C.stdy_id = A.stdy_id
+
+        /* 스터디 댓글 목록 -> 댓글 수*/
+        LEFT JOIN (
+            SELECT stdy_id, COUNT(0) AS stdy_comment_cnt FROM stdy_comment_l GROUP BY stdy_id
+        ) D ON D.stdy_id = A.stdy_id
+
+        /* 등록/수정 사용자 정보 */
+        LEFT JOIN stdy_user_info_m RGSN ON RGSN.user_id = A.rgsn_user_id
+        LEFT JOIN stdy_user_info_m AMNN ON AMNN.user_id = A.amnn_user_id
+
+        WHERE 1 = 1
+          AND A.del_yn ='N'
+          AND A.stdy_id = #{stdyId}
+    </select>
+
+    <!--    스터디 정보 작성   -->
+    <insert id="insertStudyInfo" parameterType="StudySaveReqVO">
+        INSERT INTO stdy_info_m
+        (
+            stdy_id
+            , stdy_nm
+            , stdy_con
+            , stdy_st_dt
+            , stdy_en_dt
+            , stdy_st
+            , stdy_cat_id
+            , del_yn
+            , rgsn_user_id
+            , rgsn_ts
+            , amnn_user_id
+            , amnn_ts
+        )
+        VALUES
+        (
+            #{stdyId}
+            , #{stdyNm}
+            , #{stdyCon}
+            , #{stdyStDtTm}
+            , #{stdyEnDtTm}
+            , #{stdySt}
+            , #{stdyCatId}
+            , 'N'
+            , #{rgsnUserId}
+            , CURRENT_TIMESTAMP
+            , #{amnnUserId}
+            , CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <!--    스터디 정보 수정   -->
+    <update id="updateStudyInfo" parameterType="StudySaveReqVO">
+        UPDATE
+            stdy_info_m
+        SET
+            stdy_nm       = #{stdyNm}
+            , stdy_con      = #{stdyCon}
+            , stdy_st_dt    = #{stdyStDtTm}
+            , stdy_en_dt    = #{stdyEnDtTm}
+            , stdy_st       = #{stdySt}
+            , stdy_cat_id   = #{stdyCatId}
+            , amnn_user_id  = #{amnnUserId}
+            , amnn_ts       = CURRENT_TIMESTAMP
+        WHERE stdy_id = #{stdyId}
+    </update>
+
+    <!--    스터디 정보 삭제   -->
+    <update id="deleteStudyInfo" parameterType="StudySaveReqVO">
+        UPDATE
+            stdy_info_m
+        SET
+            del_yn = 'Y'
+          , amnn_user_id = #{amnnUserId}
+          , amnn_ts = CURRENT_TIMESTAMP
+        WHERE 1 = 1
+          AND stdy_id = #{stdyId}
+    </update>
+
+</mapper>
