@@ -33,7 +33,7 @@ spring:
 # Mybatis
 mybatis:
   mapper-locations: classpath:database/mapper/**/*Mapper.xml
-  type-aliases-package: com.lecture.study.biz.service
+  type-aliases-package: com.lecture.blog.biz.service
   configuration:
     map-underscore-to-camel-case: true
     jdbc-type-for-null: varchar
