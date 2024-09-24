@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.lecture.blog.biz.service.tag.vo.TagVO;
-
+import com.lecture.blog.biz.service.comment.vo.CommentResVO;
 /**
  * 게시글 조회 관련 Res VO
  */
@@ -20,14 +20,31 @@ public class PostResVO {
     private String blogPostId;
     // 블로그 ID
     private String blogId;
+
     // 블로그 게시글 카테고리 ID
     private String blogPostCatId;
     // 블로그 게시글 제목
     private String blogPostTitle;
     // 블로그 게시글 내용
     private String blogPostCon;
+    // 블로그 게시글 등록자 ID;
+    private String userId;
+    // 블로그 명;
+    private String blogNm;
+
+    // 블로그 게시글 등록자;
+    private String blogUserNm;
+
+
     // 삭제 여부
     private String delYn;
+
+    // 이전 게시글 ID
+    private String previousBlogPostId;
+    // 다음 게시글 ID
+    private String nextBlogPostId;
+
+
 
     // 등록 사용자
     private String rgsnUserId;
@@ -41,8 +58,12 @@ public class PostResVO {
 
     // 카테고리 이름
     private String blogPostCatNm;
+
     // 태그 목록
     private List<TagVO> tagList;
+    // 댓글 목록
+    private List<CommentResVO> commentList;
+
 
     // 총 방문자 수
     private int postViewsCnt;
