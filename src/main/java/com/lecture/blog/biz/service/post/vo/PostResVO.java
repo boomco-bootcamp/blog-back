@@ -7,6 +7,7 @@ import org.apache.ibatis.type.Alias;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.lecture.blog.biz.service.tag.vo.TagVO;
 
 /**
  * 게시글 조회 관련 Res VO
@@ -37,5 +38,16 @@ public class PostResVO {
     private String amnnUserId;
     // 수정 일시
     private Timestamp amnnTs;
+
+    // 카테고리 이름
+    private String blogPostCatNm;
+    // 태그 목록
+    private List<TagVO> tagList;
+
+    // 총 방문자 수
+    private int postViewsCnt;
+
+    // 총 댓글 수
+    private int postCommentCnt;
 
 }
