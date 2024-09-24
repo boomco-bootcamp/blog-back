@@ -15,11 +15,11 @@ public class PostReqVO extends PageVO {
     /*
      * 조회 검색 조건
      */
-    // 검색어(강의 명, 테그)
+    // 검색어(게시글 명, 테그)
     private String searchCon;
 
-    // 스터디 카테고리 ID
-    private String stdyCatId;
+    // 게시글 카테고리 ID
+    private String blogPostCatId;
 
     // 정렬 조건
     private String orderType;
@@ -27,8 +27,8 @@ public class PostReqVO extends PageVO {
     /*
      * 상세 검색 조건
      */
-    // 스터디 ID
-    private String stdyId;
+    // 게시글 ID
+    private String blogPostId;
 
     
 }

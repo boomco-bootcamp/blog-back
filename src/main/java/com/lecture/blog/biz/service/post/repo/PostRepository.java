@@ -16,5 +16,7 @@ public interface PostRepository {
     // 게시글 정보 목록조회
     List<PostResVO> selectPostInfoList(PostReqVO reqVO);
 
+    int selectPostInfoTotal(PostReqVO reqVO);
+
 
 }

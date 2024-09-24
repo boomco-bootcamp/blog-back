@@ -2,22 +2,101 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lecture.blog.biz.service.post.repo.PostRepository">
 
-    <!--    블로그 정보 목록 조회 -->
+    <!--    블로그 게시글 목록 조회 -->
     <select id="selectPostInfoList" parameterType="PostReqVO" resultType="PostResVO">
         SELECT
-            blog_post_id
-            ,blog_id
-            ,blog_post_cat_id
-            ,blog_post_title
-            ,blog_post_con
-            ,del_yn
-            ,rgsn_user_id
-            ,rgsn_ts
-            ,amnn_user_id
-            ,amnn_ts
+            bp.blog_post_id,
+            bp.blog_id,
+            bp.blog_post_cat_id,
+            bp.blog_post_title,
+            bp.blog_post_con,
+            bp.del_yn,
+            bp.rgsn_user_id,
+            RGSN.user_nm AS rgsn_user_nm,
+            bp.rgsn_ts,
+            bp.amnn_user_id,
+            AMNN.user_nm AS amnn_user_nm,
+            bp.amnn_ts,
+            coalesce(bpv.blog_post_views_cnt, 0) AS post_views_cnt,
+            coalesce(bpc.blog_post_comment_cnt, 0) AS post_comment_cnt,
+            bpci.blog_post_cat_nm
 
-        FROM blog_post_l
+        FROM blog_post_l bp
 
+        /* 게시글 카테고리 정보 */
+        LEFT JOIN blog_post_cat_info_m bpci ON bpci.blog_post_cat_id = bp.blog_post_cat_id AND bpci.del_yn = 'N'
+
+        /* 게시글 방문자 수 */
+        LEFT JOIN (
+            SELECT blog_post_id, COUNT(0) AS blog_post_views_cnt FROM blog_post_views_l GROUP BY blog_post_id
+        ) bpv ON bpv.blog_post_id = bp.blog_post_id
+
+        /* 게시글 댓글 수*/
+        LEFT JOIN (
+            SELECT blog_post_id, COUNT(0) AS blog_post_comment_cnt FROM blog_post_comment_l GROUP BY blog_post_id
+        ) bpc ON bpc.blog_post_id = bp.blog_post_id
+
+        /* 게시글 태그 목록 */
+        LEFT JOIN (
+            SELECT blog_post_id
+            FROM blog_post_tag_l
+            WHERE 1 = 1
+            AND UPPER(blog_tag_con) LIKE '%' || UPPER(#{searchCon}) || '%'
+            GROUP BY blog_post_id
+        )  btl ON btl.blog_post_id = bp.blog_post_id
+
+        /* 등록/수정 사용자 정보 */
+        LEFT JOIN blog_user_info_m RGSN ON RGSN.user_id = bp.rgsn_user_id
+        LEFT JOIN blog_user_info_m AMNN ON AMNN.user_id = bp.amnn_user_id
+
+        WHERE 1 = 1
+        AND bp.del_yn ='N'
+
+        <if test="blogPostCatId != null and !blogPostCatId.equals('')">
+            AND bp.blog_post_cat_id = #{blogPostCatId}
+        </if>
+
+        <if test="searchCon != null and !searchCon.equals('')">
+            AND (
+                    UPPER(bp.blog_post_title) LIKE '%' || UPPER(#{searchCon}) || '%'
+                    OR
+                    btl.blog_post_id IS NOT NULL
+            )
+        </if>
+
+        LIMIT #{record} OFFSET (#{page} - 1)
+    </select>
+
+    <!--    게시글 정보 목록 총 카운트 -->
+    <select id="selectPostInfoTotal" parameterType="PostReqVO" resultType="int">
+        SELECT COUNT(0)
+
+        FROM blog_post_l bp
+
+        <if test="searchCon != null and !searchCon.equals('')">
+            /* 게시글 태그 목록 */
+            LEFT JOIN (
+            SELECT blog_post_id
+            FROM blog_post_tag_l
+            WHERE 1 = 1
+            AND UPPER(blog_tag_con) LIKE '%' || UPPER(#{searchCon}) || '%'
+            GROUP BY blog_post_id
+            )  btl ON btl.blog_post_id = bp.blog_post_id
+        </if>
+
+        WHERE 1 = 1 AND bp.del_yn ='N'
+
+        <if test="blogPostCatId != null and !blogPostCatId.equals('')">
+            AND bp.blog_post_cat_id = #{blogPostCatId}
+        </if>
+
+        <if test="searchCon != null and !searchCon.equals('')">
+            AND (
+            UPPER(bp.blog_post_title) LIKE '%' || UPPER(#{searchCon}) || '%'
+            OR
+            btl.blog_post_id IS NOT NULL
+            )
+        </if>
     </select>
 
 
