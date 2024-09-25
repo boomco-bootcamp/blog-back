@@ -6,6 +6,7 @@ import com.lecture.blog.biz.service.tag.TagService;
 
 import com.lecture.blog.biz.service.post.vo.PostReqVO;
 import com.lecture.blog.biz.service.post.vo.PostResVO;
+import com.lecture.blog.biz.service.post.vo.PostSaveReqVO;
 import com.lecture.blog.biz.service.comon.vo.PagingListVO;
 import com.lecture.blog.biz.service.tag.vo.TagVO;
 import com.lecture.blog.biz.service.comment.vo.CommentResVO;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 게시글 관련 서비스 Impl
@@ -110,6 +112,87 @@ public class PostServiceImpl implements PostService {
                 result.setCommentList(commentList); // PostResVO에 댓글 목록 필드가 있다고 가정
 
             }
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * 게시글 작성 및 수정
+     * @param saveReqVO
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int savePostInfo(PostSaveReqVO saveReqVO) throws Exception {
+        try {
+
+            int result = 0;
+
+            // 게시글 ID 가 존재하지 않는 경우, 작성
+            if(StringUtils.isBlank(saveReqVO.getBlogPostId())) {
+                // UUID 발급
+                String blogPostId = UUID.randomUUID().toString();
+                saveReqVO.setBlogPostId(blogPostId);
+                result = postRepository.insertPostInfo(saveReqVO);
+
+                // 태그 리스트가 존재하는 경우, 태그 저장
+                if(saveReqVO.getTagList() != null && saveReqVO.getTagList().size() > 0) {
+                    for (TagVO tag : saveReqVO.getTagList()) {
+                        tag.setBlogPostTagId(UUID.randomUUID().toString());
+                        tag.setBlogPostId(blogPostId);
+                        tag.setDelYn("N");
+                        tagService.insertTag(tag);
+                    }
+                }
+
+            }
+            // 게시글 ID 가 존재하는 경우, 수정
+            else {
+                result = postRepository.updatePostInfo(saveReqVO);
+
+                // 기존에 있는 태그를 전부 삭제처리 하고,
+                TagVO tagVO = new TagVO();
+                tagVO.setBlogPostId(saveReqVO.getBlogPostId());
+                tagService.deleteTag(tagVO);
+
+                // 새 태그 리스트가 존재하는 경우, 태그 저장
+                if(saveReqVO.getTagList() != null && saveReqVO.getTagList().size() > 0) {
+                    for (TagVO tag : saveReqVO.getTagList()) {
+                        tag.setBlogPostTagId(UUID.randomUUID().toString());
+                        tag.setBlogPostId(saveReqVO.getBlogPostId());
+                        tag.setDelYn("N");
+                        tagService.insertTag(tag);
+                    }
+                }
+            }
+
+            return result;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * 게시글 삭제
+     * @param saveReqVO
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int deletePostInfo(PostSaveReqVO saveReqVO) throws Exception {
+        try {
+            int result = postRepository.deletePostInfo(saveReqVO);
+
+            // 태그 전체 삭제
+            TagVO tagVO = new TagVO();
+            tagVO.setBlogPostId(saveReqVO.getBlogPostId());
+            tagService.deleteTag(tagVO);
 
             return result;
         } catch (Exception e) {

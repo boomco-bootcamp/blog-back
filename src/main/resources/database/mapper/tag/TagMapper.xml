@@ -20,6 +20,45 @@
         WHERE 1 = 1 AND blog_post_id = #{blogPostId}
     </select>
 
+    <!--    게시글 태그 저장   -->
+    <insert id="insertPostTag" parameterType="TagVO">
+        insert into blog_post_tag_l
+        (
+          blog_post_tag_id
+        , blog_post_id
+        , blog_tag_con
+        , del_yn
+        , rgsn_user_id
+        , rgsn_ts
+        , amnn_user_id
+        , amnn_ts
+        )
+        values
+            (
+              #{blogPostTagId}
+            , #{blogPostId}
+            , #{blogTagCon}
+            , 'N'
+            , #{rgsnUserId}
+            , CURRENT_TIMESTAMP
+            , #{amnnUserId}
+            , CURRENT_TIMESTAMP
+            )
+    </insert>
 
+    <!--    게시글 태그 삭제   -->
+    <update id="deletePostTag" parameterType="TagVO">
+        UPDATE
+        blog_post_tag_l
+        SET
+        del_yn = 'Y'
+        , amnn_user_id = #{amnnUserId}
+        , amnn_ts = CURRENT_TIMESTAMP
+        WHERE 1 = 1
+        AND blog_post_id = #{blogPostId}
+        <if test="blogPostTagId != null and !blogPostTagId.equals('')">
+            AND blog_post_tag_id = #{blogPostTagId}
+        </if>
+    </update>
 
 </mapper>

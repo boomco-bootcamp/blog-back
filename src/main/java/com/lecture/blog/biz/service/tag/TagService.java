@@ -21,20 +21,20 @@ public interface TagService {
 //     */
 //    List<TagVO> searchTagFavoriteList() throws Exception;
 //
-//    /**
-//     * 스터디 태그 저장
-//     * @param tag
-//     * @return
-//     * @throws Exception
-//     */
-//    int insertTag(TagVO tag) throws Exception;
-//
-//    /**
-//     * 스터디 태그 삭제
-//     * @param tag
-//     * @return
-//     * @throws Exception
-//     */
-//    int deleteTag(TagVO tag) throws Exception;
+    /**
+     * 게시글 태그 저장
+     * @param tag
+     * @return
+     * @throws Exception
+     */
+    int insertTag(TagVO tag) throws Exception;
+
+    /**
+     * 게시글 태그 삭제
+     * @param tag
+     * @return
+     * @throws Exception
+     */
+    int deleteTag(TagVO tag) throws Exception;
 
 }

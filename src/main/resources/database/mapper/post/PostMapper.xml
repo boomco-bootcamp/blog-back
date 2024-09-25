@@ -61,8 +61,6 @@
         WHERE 1 = 1
         AND bp.del_yn ='N'
 
-
-
         <if test="blogPostCatId != null and !blogPostCatId.equals('')">
             AND bp.blog_post_cat_id = #{blogPostCatId}
         </if>
@@ -179,5 +177,61 @@
           AND A.blog_post_id = #{blogPostId}
     </select>
 
+    <!--    게시글 정보 작성   -->
+    <insert id="insertPostInfo" parameterType="PostSaveReqVO">
+        INSERT INTO blog_post_l
+        (
+          blog_post_id
+        , blog_id
+        , blog_post_title
+        , blog_post_con
+        , blog_post_cat_id
+        , del_yn
+        , rgsn_user_id
+        , rgsn_ts
+        , amnn_user_id
+        , amnn_ts
+        )
+        VALUES
+            (
+              #{blogPostId}
+            , (SELECT A.blog_id
+               FROM blog_info_m A
+               WHERE A.rgsn_user_id = #{rgsnUserId})
+            , #{blogPostTitle}
+            , #{blogPostCon}
+            , #{blogPostCatId}
+            , 'N'
+            , #{rgsnUserId}
+            , CURRENT_TIMESTAMP
+            , #{amnnUserId}
+            , CURRENT_TIMESTAMP
+            )
+    </insert>
+
+    <!--    게시글 정보 수정   -->
+    <update id="updatePostInfo" parameterType="PostSaveReqVO">
+        UPDATE
+            blog_post_l
+        SET
+            blog_post_title       = #{blogPostTitle}
+          , blog_post_con      = #{blogPostCon}
+          , blog_post_cat_id   = #{blogPostCatId}
+          , amnn_user_id  = #{amnnUserId}
+          , amnn_ts       = CURRENT_TIMESTAMP
+        WHERE blog_post_id = #{blogPostId}
+    </update>
+
+    <!--    게시글 정보 삭제   -->
+    <update id="deletePostInfo" parameterType="PostSaveReqVO">
+        UPDATE
+            blog_post_l
+        SET
+            del_yn = 'Y'
+          , amnn_user_id = #{amnnUserId}
+          , amnn_ts = CURRENT_TIMESTAMP
+        WHERE 1 = 1
+          AND blog_post_id = #{blogPostId}
+    </update>
 
 </mapper>
