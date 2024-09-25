@@ -10,6 +10,13 @@ logging:
 
 ---
 
+# jwt
+jwt:
+  secretKey: blogprojectjwtkeysecret
+  # 밀리초 -> 24시간
+  expiredTime : 86400000
+
+
 # USER
 spring:
   security:
