@@ -19,6 +19,7 @@
             bp.amnn_ts,
             coalesce(bpv.blog_post_views_cnt, 0) AS post_views_cnt,
             coalesce(bpc.blog_post_comment_cnt, 0) AS post_comment_cnt,
+            coalesce(bpl.blog_post_like_cnt, 0) AS post_like_cnt,
             bpci.blog_post_cat_nm,
             bi.user_id,
             bi.blog_nm,
@@ -38,6 +39,12 @@
         LEFT JOIN (
             SELECT blog_post_id, COUNT(0) AS blog_post_comment_cnt FROM blog_post_comment_l GROUP BY blog_post_id
         ) bpc ON bpc.blog_post_id = bp.blog_post_id
+
+        /* 게시글 좋아요 수*/
+        LEFT JOIN (
+            SELECT blog_post_id, COUNT(0) AS blog_post_like_cnt FROM blog_post_like_l GROUP BY blog_post_id
+        ) bpl ON bpl.blog_post_id = bp.blog_post_id
+
 
         /* 게시글 태그 목록 */
         LEFT JOIN (
@@ -140,11 +147,12 @@
              , A.amnn_user_id
              , AMNN.user_nm AS amnn_user_nm
              , A.amnn_ts
-             , E.user_id
-             , E.blog_nm
-             , F.user_nm AS blog_user_nm
+             , F.user_id
+             , F.blog_nm
+             , G.user_nm AS blog_user_nm
              , coalesce(C.blog_post_views_cnt, 0) AS post_views_cnt
              , coalesce(D.blog_post_comment_cnt, 0) AS post_comment_cnt
+             , coalesce(E.blog_post_like_cnt, 0) AS post_like_cnt
 
         FROM blog_post_l A
 
@@ -161,15 +169,20 @@
             SELECT blog_post_id, COUNT(0) AS blog_post_comment_cnt FROM blog_post_comment_l GROUP BY blog_post_id
         ) D ON D.blog_post_id = A.blog_post_id
 
+        /* 게시글 좋아요 수*/
+        LEFT JOIN (
+            SELECT blog_post_id, COUNT(0) AS blog_post_like_cnt FROM blog_post_like_l GROUP BY blog_post_id
+        ) E ON E.blog_post_id = A.blog_post_id
+
         /* 등록/수정 사용자 정보 */
         LEFT JOIN blog_user_info_m RGSN ON RGSN.user_id = A.rgsn_user_id
         LEFT JOIN blog_user_info_m AMNN ON AMNN.user_id = A.amnn_user_id
 
         /* 블로그 정보 */
-        LEFT JOIN blog_info_m E ON E.blog_id = A.blog_id
+        LEFT JOIN blog_info_m F ON F.blog_id = A.blog_id
 
         /* 블로그 게시글 작성자 정보 */
-        LEFT JOIN blog_user_info_m F ON F.user_id = E.user_id
+        LEFT JOIN blog_user_info_m G ON G.user_id = F.user_id
 
 
         WHERE 1 = 1
