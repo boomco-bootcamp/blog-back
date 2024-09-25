@@ -71,4 +71,6 @@ public class PostResVO {
     // 총 댓글 수
     private int postCommentCnt;
 
+    // 총 좋아요 수
+    private int postLikeCnt;
 }
