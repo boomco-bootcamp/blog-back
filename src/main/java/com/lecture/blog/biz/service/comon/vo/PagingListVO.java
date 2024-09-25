@@ -66,8 +66,8 @@ public class PagingListVO<T> {
             }
 
             // prev, next 확인
-            this.prev = this.startPage > 1;
-            this.next = this.endPage < totalPage;
+            this.prev = this.page  > 1;
+            this.next = this.page  < totalPage;
         }
 
         // request의 page 혹은 record가 null일 경우
