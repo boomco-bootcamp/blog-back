@@ -80,7 +80,8 @@
             )
         </if>
 
-        LIMIT #{record} OFFSET (#{page} - 1)
+        LIMIT #{record} OFFSET (#{page} - 1) * #{record}
+
     </select>
 
     <!--    게시글 정보 목록 총 카운트 -->
