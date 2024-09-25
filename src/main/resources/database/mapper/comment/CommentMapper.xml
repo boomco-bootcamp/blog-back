@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lecture.blog.biz.service.comment.repo.CommentRepository">
+
+    <!--    게시글 댓글 목록 조회    -->
+    <select id="selectPostCommentList" parameterType="CommentReqVO" resultType="CommentResVO">
+        SELECT
+            A.blog_post_comment_id
+            , A.blog_post_id
+            , A.blog_comment_con
+            , A.blog_parent_comment_id
+            , A.del_yn
+            , A.rgsn_user_id
+            , RGSN.user_nm AS rgsn_user_nm
+            , A.rgsn_ts
+            , A.amnn_user_id
+            , AMNN.user_nm AS amnn_user_nm
+            , A.amnn_ts
+
+        FROM blog_post_comment_l A
+
+        /* 등록/수정 사용자 정보 */
+        LEFT JOIN blog_user_info_m RGSN ON RGSN.user_id = A.rgsn_user_id
+        LEFT JOIN blog_user_info_m AMNN ON AMNN.user_id = A.amnn_user_id
+
+        WHERE 1 = 1
+
+        <if test="blogPostId != null and !blogPostId.equals('')">
+            AND A.blog_post_id = #{blogPostId}
+        </if>
+
+        /* 부모 ID 가 검색조건으로 존재하는 경우, 부모ID 검색 그렇지 않은 경우 부모ID 가 NULL 인 댓글 조회*/
+        <choose>
+            <when test="blogParentCommentId != null and !blogParentCommentId.equals('')">
+                AND A.blog_parent_comment_id = #{blogParentCommentId}
+            </when>
+            <otherwise>
+                AND A.blog_parent_comment_id IS NULL
+            </otherwise>
+        </choose>
+
+        ORDER BY A.rgsn_ts
+        
+        <if test="page != null and !page.equals('')">
+            LIMIT #{record} OFFSET (#{page} - 1)
+        </if>
+    </select>
+
+    <!--    스터디 댓글 카운트 조회   -->
+    <select id="selectPostCommentListCnt" parameterType="string" resultType="int">
+        SELECT COUNT(0)
+        FROM blog_post_comment_l
+        WHERE 1 = 1
+            AND blog_post_id = #{blogPostId}
+    </select>
+
+</mapper>

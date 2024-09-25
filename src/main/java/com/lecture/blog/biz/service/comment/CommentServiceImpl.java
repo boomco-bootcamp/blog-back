@@ -1,0 +1,51 @@
+package com.lecture.blog.biz.service.comment;
+
+import com.lecture.blog.biz.service.comment.repo.CommentRepository;
+import com.lecture.blog.biz.service.comment.vo.*;
+import com.lecture.blog.biz.service.comon.vo.PagingListVO;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service("CommentService")
+public class CommentServiceImpl implements CommentService {
+
+    private final CommentRepository commentRepository;
+
+    public CommentServiceImpl(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
+    }
+
+    /**
+     * 게시글 댓글 목록 조회
+     * @param reqVO
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public PagingListVO<CommentResVO> searchPostCommentList(CommentReqVO reqVO) throws Exception {
+        try {
+            // 게시글 댓글 목록 조회
+            List<CommentResVO> resultList = commentRepository.selectPostCommentList(reqVO);
+            // 게시글 댓글 카운트 조회
+            int totalCnt = commentRepository.selectPostCommentListCnt(reqVO.getBlogPostId());
+
+            // 댓글 목록이 존재하는 경우, 자식 댓글 조회
+            for (CommentResVO x : resultList) {
+                reqVO.setBlogParentCommentId(x.getBlogPostCommentId());
+                reqVO.setPage(null); // 페이징 처리 하지 않음
+                List<CommentResVO> childList = commentRepository.selectPostCommentList(reqVO);
+                x.setBlogChildCommentList(childList);
+            }
+
+            return new PagingListVO<>(reqVO, resultList, totalCnt);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+
+}

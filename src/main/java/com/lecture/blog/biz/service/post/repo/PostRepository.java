@@ -3,6 +3,7 @@ package com.lecture.blog.biz.service.post.repo;
 import com.lecture.blog.biz.service.post.vo.PostReqVO;
 import com.lecture.blog.biz.service.post.vo.PostResVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,6 +18,9 @@ public interface PostRepository {
     List<PostResVO> selectPostInfoList(PostReqVO reqVO);
 
     int selectPostInfoTotal(PostReqVO reqVO);
+
+    // 게시글 상세 정보 조회
+    PostResVO selectPostInfo(@Param("blogPostId")String blogPostId);
 
 
 }

@@ -19,7 +19,10 @@
             bp.amnn_ts,
             coalesce(bpv.blog_post_views_cnt, 0) AS post_views_cnt,
             coalesce(bpc.blog_post_comment_cnt, 0) AS post_comment_cnt,
-            bpci.blog_post_cat_nm
+            bpci.blog_post_cat_nm,
+            bi.user_id,
+            bi.blog_nm,
+            U.user_nm AS blog_user_nm
 
         FROM blog_post_l bp
 
@@ -49,8 +52,16 @@
         LEFT JOIN blog_user_info_m RGSN ON RGSN.user_id = bp.rgsn_user_id
         LEFT JOIN blog_user_info_m AMNN ON AMNN.user_id = bp.amnn_user_id
 
+        /* 블로그 정보 */
+        LEFT JOIN blog_info_m bi ON bi.blog_id = bp.blog_id
+
+        /* 블로그 게시글 작성자 정보 */
+        LEFT JOIN blog_user_info_m U ON U.user_id = bi.user_id
+
         WHERE 1 = 1
         AND bp.del_yn ='N'
+
+
 
         <if test="blogPostCatId != null and !blogPostCatId.equals('')">
             AND bp.blog_post_cat_id = #{blogPostCatId}
@@ -92,11 +103,80 @@
 
         <if test="searchCon != null and !searchCon.equals('')">
             AND (
-            UPPER(bp.blog_post_title) LIKE '%' || UPPER(#{searchCon}) || '%'
-            OR
-            btl.blog_post_id IS NOT NULL
+                    UPPER(bp.blog_post_title) LIKE '%' || UPPER(#{searchCon}) || '%'
+                    OR
+                    btl.blog_post_id IS NOT NULL
             )
         </if>
+
+    </select>
+
+    <!--    게시글 상세 정보 조회    -->
+    <select id="selectPostInfo" parameterType="string" resultType="PostResVO">
+        SELECT
+            A.blog_post_id
+            /* 이전 글 ID - 정렬 조건 : 글 등록 순 */
+            , (
+                SELECT previous_blog_post_id
+                FROM (SELECT blog_post_id, LAG(blog_post_id) OVER (ORDER BY rgsn_ts DESC) AS previous_blog_post_id FROM blog_post_l)
+                WHERE blog_post_id = A.blog_post_id
+            ) AS previous_blog_post_id
+            /* 다음 글 ID - 정렬 조건 : 글 등록 순 */
+            , (
+                SELECT next_blog_post_id
+                FROM (SELECT blog_post_id, LEAD(blog_post_id) OVER (ORDER BY rgsn_ts DESC) AS next_blog_post_id FROM blog_post_l)
+                WHERE blog_post_id = A.blog_post_id
+            ) AS next_blog_post_id
+
+             , A.blog_id
+             , A.blog_post_title
+             , A.blog_post_con
+
+             , A.blog_post_cat_id
+             , B.blog_post_cat_nm
+
+             , A.del_yn
+             , A.rgsn_user_id
+             , RGSN.user_nm AS rgsn_user_nm
+             , A.rgsn_ts
+             , A.amnn_user_id
+             , AMNN.user_nm AS amnn_user_nm
+             , A.amnn_ts
+             , E.user_id
+             , E.blog_nm
+             , F.user_nm AS blog_user_nm
+             , coalesce(C.blog_post_views_cnt, 0) AS post_views_cnt
+             , coalesce(D.blog_post_comment_cnt, 0) AS post_comment_cnt
+
+        FROM blog_post_l A
+
+        /* 게시글 카테고리 정보 */
+        LEFT JOIN blog_post_cat_info_m B ON B.blog_post_cat_id = A.blog_post_cat_id AND B.del_yn = 'N'
+
+        /* 게시글 방문자 수 */
+        LEFT JOIN (
+            SELECT blog_post_id, COUNT(0) AS blog_post_views_cnt FROM blog_post_views_l GROUP BY blog_post_id
+        ) C ON C.blog_post_id = A.blog_post_id
+
+            /* 게시글 댓글 수*/
+        LEFT JOIN (
+            SELECT blog_post_id, COUNT(0) AS blog_post_comment_cnt FROM blog_post_comment_l GROUP BY blog_post_id
+        ) D ON D.blog_post_id = A.blog_post_id
+
+        /* 등록/수정 사용자 정보 */
+        LEFT JOIN blog_user_info_m RGSN ON RGSN.user_id = A.rgsn_user_id
+        LEFT JOIN blog_user_info_m AMNN ON AMNN.user_id = A.amnn_user_id
+
+        /* 블로그 정보 */
+        LEFT JOIN blog_info_m E ON E.blog_id = A.blog_id
+
+        /* 블로그 게시글 작성자 정보 */
+        LEFT JOIN blog_user_info_m F ON F.user_id = E.user_id
+
+
+        WHERE 1 = 1
+          AND A.del_yn ='N'
+          AND A.blog_post_id = #{blogPostId}
     </select>
 
 

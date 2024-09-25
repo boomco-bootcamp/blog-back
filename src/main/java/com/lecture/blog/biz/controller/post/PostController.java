@@ -37,4 +37,20 @@ public class PostController {
         }
     }
 
+    /**
+     * 게시글 상세 정보 조회
+     * @param reqVO
+     * @return
+     */
+    @GetMapping("/detail")
+    public ResponseEntity searchPostInfo(PostReqVO reqVO) {
+        try {
+            PostResVO result = postService.searchPostInfo(reqVO);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
