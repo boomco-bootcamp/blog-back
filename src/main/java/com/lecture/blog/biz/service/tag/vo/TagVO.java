@@ -26,7 +26,6 @@ public class TagVO {
 	// 등록 사용자 ID
 	private String rgsnUserId;
 
-
 	// 등록 일시
 	private String rgsnTs;
 

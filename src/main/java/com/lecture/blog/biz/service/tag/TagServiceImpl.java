@@ -38,25 +38,25 @@ public class TagServiceImpl implements TagService {
 //        return resultList;
 //    }
 //
-//    /**
-//     * 스터디 태그 저장
-//     * @param tag
-//     * @return
-//     * @throws Exception
-//     */
-//    @Override
-//    public int insertTag(TagVO tag) throws Exception {
-//        return tagRepository.insertStudyTag(tag);
-//    }
-//
-//    /**
-//     * 스터디 태그 삭제
-//     * @param tag
-//     * @return
-//     * @throws Exception
-//     */
-//    @Override
-//    public int deleteTag(TagVO tag) throws Exception {
-//        return tagRepository.deleteStudyTag(tag);
-//    }
+    /**
+     * 게시글 태그 저장
+     * @param tag
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int insertTag(TagVO tag) throws Exception {
+        return tagRepository.insertPostTag(tag);
+    }
+
+    /**
+     * 스터디 태그 삭제
+     * @param tag
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int deleteTag(TagVO tag) throws Exception {
+        return tagRepository.deletePostTag(tag);
+    }
 }
