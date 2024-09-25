@@ -14,19 +14,19 @@ import java.util.List;
 @Alias("CommentResVO")
 public class CommentResVO {
 
-    // 스터디 댓글 ID
+    // 게시글 댓글 ID
     private String blogPostCommentId;
 
-    // 스터디 ID
+    // 게시글 ID
     private String blogPostId;
 
-    // 스터티 댓글 내용
+    // 게시글 댓글 내용
     private String blogCommentCon;
 
-    // 스터디 부모 댓글 ID
+    // 게시글 부모 댓글 ID
     private String blogParentCommentId;
 
-    // 스터디 자식 댓글 목록
+    // 게시글 자식 댓글 목록
     private List<CommentResVO> blogChildCommentList;
 
     // 삭제 여부

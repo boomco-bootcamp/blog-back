@@ -62,11 +62,11 @@ public class PostController {
      * @return
      */
     @PostMapping("/save")
-    public ResponseEntity savePostInfo(@RequestBody PostSaveReqVO saveReqVO) {
+    public ResponseEntity savePostInfo(@RequestBody PostSaveReqVO saveReqVO, @AuthenticationPrincipal User user) {
         try {
-            //임시 등록사용자 및 수정 사용자 이름
-            saveReqVO.setRgsnUserId("de04a114-b0f0-4ccb-c1ee-93559e6bde10");
-            saveReqVO.setAmnnUserId("de04a114-b0f0-4ccb-c1ee-93559e6bde10");
+            if(user == null) throw new Exception("로그인이 필요한 서비스 입니다.");
+            saveReqVO.setRgsnUserId(user.getUsername());
+            saveReqVO.setAmnnUserId(user.getUsername());
             int result = postService.savePostInfo(saveReqVO);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
@@ -83,9 +83,9 @@ public class PostController {
     @PostMapping("/delete")
     public ResponseEntity deleteStudyInfo(@RequestBody PostSaveReqVO saveReqVO, @AuthenticationPrincipal User user) {
         try {
-            //임시 등록사용자 및 수정 사용자 이름
-            saveReqVO.setRgsnUserId("de04a114-b0f0-4ccb-c1ee-93559e6bde10");
-            saveReqVO.setAmnnUserId("de04a114-b0f0-4ccb-c1ee-93559e6bde10");
+            if(user == null) throw new Exception("로그인이 필요한 서비스 입니다.");
+            saveReqVO.setRgsnUserId(user.getUsername());
+            saveReqVO.setAmnnUserId(user.getUsername());
             int result = postService.deletePostInfo(saveReqVO);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
