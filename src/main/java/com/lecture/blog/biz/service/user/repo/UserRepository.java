@@ -3,7 +3,7 @@ package com.lecture.blog.biz.service.user.repo;
 import com.lecture.blog.biz.service.user.vo.UserInfoVO;
 import com.lecture.blog.biz.service.user.vo.UserReqVO;
 import com.lecture.blog.biz.service.user.vo.UserSaveReqVO;
-import com.lecture.blog.biz.service.user.vo.BlogSaveReqVO;
+import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

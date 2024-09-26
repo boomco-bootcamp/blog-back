@@ -111,6 +111,17 @@ public class PostServiceImpl implements PostService {
 
                 result.setCommentList(commentList);
 
+                // 게시글 조회수 추가
+                if (reqVO.getUserId() != null) {
+                    // 조회수가 이미 존재하는지 확인
+                    boolean checkPostView = postRepository.checkPostViewed(reqVO);
+
+                    // 중복되지 않은 경우에만 조회수 추가
+                    if (!checkPostView) {
+                        postRepository.insertPostView(reqVO);
+                    }
+                }
+
             }
 
             return result;

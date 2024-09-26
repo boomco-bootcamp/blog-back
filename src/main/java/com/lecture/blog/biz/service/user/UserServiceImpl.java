@@ -7,7 +7,7 @@ import com.lecture.blog.biz.service.user.vo.LoginReqVO;
 import com.lecture.blog.biz.service.user.vo.UserInfoVO;
 import com.lecture.blog.biz.service.user.vo.UserReqVO;
 import com.lecture.blog.biz.service.user.vo.UserSaveReqVO;
-import com.lecture.blog.biz.service.user.vo.BlogSaveReqVO;
+import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;

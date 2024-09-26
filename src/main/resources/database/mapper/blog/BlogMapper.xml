@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lecture.blog.biz.service.blog.repo.BlogRepository">
+
+    <!--    블로그 정보 조회   -->
+    <select id="selectBlogInfo" resultType="blogInfoVO"  parameterType="blogReqVO">
+        SELECT
+            blog_id
+            , user_id
+            , blog_nm
+            , blog_con
+            , del_yn
+            , rgsn_user_id
+            , rgsn_ts
+            , amnn_user_id
+            , amnn_ts
+
+        FROM blog_info_m
+
+        WHERE blog_id = #{blogId}
+
+    </select>
+
+    <!--    회원 정보 변경    -->
+    <update id="updateBlogInfo" parameterType="BlogSaveReqVO">
+        UPDATE
+            blog_info_m
+        SET
+        blog_nm       = #{blogNm}
+        , blog_con      = #{blogCon}
+        , amnn_user_id  = #{userId}
+        , amnn_ts       = CURRENT_TIMESTAMP
+
+        WHERE 1 = 1
+        AND user_id = #{userId}
+    </update>
+
+</mapper>
