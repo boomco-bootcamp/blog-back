@@ -68,6 +68,10 @@
         WHERE 1 = 1
         AND bp.del_yn ='N'
 
+        <if test="blogId != null and !blogId.equals('')">
+            AND bp.blog_id = #{blogId}
+        </if>
+
         <if test="blogPostCatId != null and !blogPostCatId.equals('')">
             AND bp.blog_post_cat_id = #{blogPostCatId}
         </if>
