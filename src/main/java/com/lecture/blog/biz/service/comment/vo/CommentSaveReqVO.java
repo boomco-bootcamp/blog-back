@@ -8,7 +8,7 @@ import org.apache.ibatis.type.Alias;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Alias("StudyCommentSaveReqVO")
+@Alias("CommentSaveReqVO")
 public class CommentSaveReqVO {
 
     // 게시글 댓글 ID

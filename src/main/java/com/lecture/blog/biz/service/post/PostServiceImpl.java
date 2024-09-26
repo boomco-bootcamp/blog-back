@@ -109,7 +109,7 @@ public class PostServiceImpl implements PostService {
                 PagingListVO<CommentResVO> commentPagingList = commentServiceImpl.searchPostCommentList(commentReqVO);
                 List<CommentResVO> commentList = commentPagingList.getList();
 
-                result.setCommentList(commentList); // PostResVO에 댓글 목록 필드가 있다고 가정
+                result.setCommentList(commentList);
 
             }
 

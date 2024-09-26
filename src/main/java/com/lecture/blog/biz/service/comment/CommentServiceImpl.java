@@ -18,7 +18,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     /**
-     * 게시글 댓글 목록 조회
+     * 댓글 목록 조회
      * @param reqVO
      * @return
      * @throws Exception
@@ -41,6 +41,40 @@ public class CommentServiceImpl implements CommentService {
 
             return new PagingListVO<>(reqVO, resultList, totalCnt);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * 게시글 댓글 작성
+     * @param reqVO
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int savePostComment(CommentSaveReqVO reqVO) throws Exception {
+        try {
+            // UUID 생성
+            reqVO.setBlogCommentId(UUID.randomUUID().toString());
+            return commentRepository.insertPostComment(reqVO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * 게시글 댓글 삭제
+     * @param reqVO
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int deletePostComment(CommentSaveReqVO reqVO) throws Exception {
+        try {
+            return commentRepository.deletePostComment(reqVO);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
