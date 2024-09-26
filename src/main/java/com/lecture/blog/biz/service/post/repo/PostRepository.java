@@ -22,6 +22,10 @@ public interface PostRepository {
 
     // 게시글 상세 정보 조회
     PostResVO selectPostInfo(@Param("blogPostId")String blogPostId);
+    // 게시글 조회수 체크
+    boolean checkPostViewed(PostReqVO reqVO);
+    // 게시글 조회수 추가
+    int insertPostView(PostReqVO reqVO);
 
     // 스터디 정보 작성
     int insertPostInfo(PostSaveReqVO saveReqVO);
@@ -31,6 +35,8 @@ public interface PostRepository {
 
     // 스터디 정보 삭제
     int deletePostInfo(PostSaveReqVO saveReqVO);
+
+
 
 
 

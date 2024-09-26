@@ -244,6 +244,32 @@
             )
     </insert>
 
+    <!-- 게시글 조회 중복 체크 -->
+    <select id="checkPostViewed" parameterType="PostReqVO" resultType="boolean">
+        SELECT COUNT(1)
+        FROM blog_post_views_l
+        WHERE blog_post_id = #{blogPostId}
+          AND rgsn_user_id = #{userId}
+    </select>
+
+    <!--    게시글 조회수 추가  -->
+    <insert id="insertPostView" parameterType="PostReqVO">
+        INSERT INTO blog_post_views_l
+        (
+          blog_post_views_id
+        , blog_post_id
+        , rgsn_user_id
+        , rgsn_ts
+        )
+        VALUES
+            (
+              #{userId}
+            , #{blogPostId}
+            , #{userId}
+            , CURRENT_TIMESTAMP
+            )
+    </insert>
+
     <!--    게시글 정보 수정   -->
     <update id="updatePostInfo" parameterType="PostSaveReqVO">
         UPDATE

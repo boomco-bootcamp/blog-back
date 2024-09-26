@@ -46,8 +46,11 @@ public class PostController {
      * @return
      */
     @GetMapping("/detail")
-    public ResponseEntity searchPostInfo(PostReqVO reqVO) {
+    public ResponseEntity searchPostInfo(PostReqVO reqVO, @AuthenticationPrincipal User user) {
         try {
+            if (user != null) {
+                reqVO.setUserId(user.getUsername());
+            }
             PostResVO result = postService.searchPostInfo(reqVO);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
@@ -94,8 +97,27 @@ public class PostController {
         }
     }
 
-
+    /**
+     * 블로그 조회
+     * @param reqVO
+     * @return
+     */
+    @GetMapping("/blog")
+    public ResponseEntity searchBlog(PostReqVO reqVO, @AuthenticationPrincipal User user) {
+        try {
+            if (user != null) {
+                reqVO.setUserId(user.getUsername());
+            }
+            PostResVO result = postService.searchPostInfo(reqVO);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 
 
 }
+
+

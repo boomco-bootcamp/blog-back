@@ -29,5 +29,8 @@ public class PostSaveReqVO {
 
     // 수정 사용자
     private String amnnUserId;
+
+    // 유저 ID
+    private String userId;
 }
 

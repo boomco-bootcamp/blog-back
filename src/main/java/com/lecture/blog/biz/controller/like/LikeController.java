@@ -1,12 +1,8 @@
 package com.lecture.blog.biz.controller.like;
 
-import com.lecture.blog.biz.service.comment.CommentService;
-import com.lecture.blog.biz.service.comment.vo.CommentReqVO;
-import com.lecture.blog.biz.service.comment.vo.CommentResVO;
-import com.lecture.blog.biz.service.comment.vo.CommentSaveReqVO;
 import com.lecture.blog.biz.service.like.LikeService;
 import com.lecture.blog.biz.service.like.vo.LikeSaveReqVO;
-import com.lecture.blog.biz.service.comon.vo.PagingListVO;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
