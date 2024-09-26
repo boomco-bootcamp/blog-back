@@ -39,6 +39,12 @@ public class BlogSaveReqVO extends PageVO {
     private Timestamp amnnTs;
 
 
+    /*
+     * 방문자 저장용
+     */
+
+    // 블로그 방문자 ID
+    private String blogViewId;
 
     /*
      * 유저 확인용

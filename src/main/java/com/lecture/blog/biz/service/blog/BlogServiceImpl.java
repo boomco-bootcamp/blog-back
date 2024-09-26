@@ -7,6 +7,7 @@ import com.lecture.blog.biz.service.blog.repo.BlogRepository;
 import com.lecture.blog.biz.service.blog.vo.BlogReqVO;
 import com.lecture.blog.biz.service.blog.vo.BlogInfoVO;
 import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
+import com.lecture.blog.biz.service.user.vo.UserReqVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,18 @@ public class BlogServiceImpl implements BlogService {
     public BlogInfoVO searchBlogInfo(BlogReqVO reqVO) throws Exception {
         try {
             BlogInfoVO result = blogRepository.selectBlogInfo(reqVO);
+
+            // 블로그 방문자 추가
+            if (reqVO.getUserId() != null) {
+                // 방문 정보가 이미 존재하는지 확인
+                boolean checkBlogView = blogRepository.checkBlogViewed(reqVO);
+
+                // 중복되지 않은 경우에만 방문자 추가
+                if (!checkBlogView) {
+                    blogRepository.insertBlogView(reqVO);
+                }
+            }
+
             return result;
 
         } catch (Exception e) {

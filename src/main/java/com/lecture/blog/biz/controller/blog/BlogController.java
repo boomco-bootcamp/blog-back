@@ -7,6 +7,7 @@ import com.lecture.blog.biz.service.blog.vo.BlogReqVO;
 import com.lecture.blog.biz.service.blog.vo.BlogResVO;
 import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
 
+import com.lecture.blog.biz.service.post.vo.PostReqVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,11 @@ public class BlogController {
      * @return
      */
     @GetMapping("/info")
-    public ResponseEntity searchBlogInfo(BlogReqVO reqVO) {
+    public ResponseEntity searchBlogInfo(BlogReqVO reqVO, @AuthenticationPrincipal User user) {
         try {
+            if (user != null) {
+                reqVO.setUserId(user.getUsername());
+            }
             BlogInfoVO result = blogService.searchBlogInfo(reqVO);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
