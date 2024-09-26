@@ -80,6 +80,20 @@
             )
         </if>
 
+        <if test="orderType != null and !orderType.equals('')">
+            <choose>
+                <when test='orderType.equals("desc")'>
+                    ORDER BY bp.rgsn_ts DESC
+                </when>
+                <when test='orderType.equals("view")'>
+                    ORDER BY coalesce(bpv.blog_post_views_cnt, 0) DESC
+                </when>
+                <when test='orderType.equals("reply")'>
+                    ORDER BY coalesce(bpl.blog_post_comment_cnt, 0) DESC
+                </when>
+            </choose>
+        </if>
+
         LIMIT #{record} OFFSET (#{page} - 1) * #{record}
 
     </select>
@@ -165,7 +179,7 @@
             SELECT blog_post_id, COUNT(0) AS blog_post_views_cnt FROM blog_post_views_l GROUP BY blog_post_id
         ) C ON C.blog_post_id = A.blog_post_id
 
-            /* 게시글 댓글 수*/
+        /* 게시글 댓글 수*/
         LEFT JOIN (
             SELECT blog_post_id, COUNT(0) AS blog_post_comment_cnt FROM blog_post_comment_l GROUP BY blog_post_id
         ) D ON D.blog_post_id = A.blog_post_id
