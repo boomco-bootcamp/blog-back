@@ -89,7 +89,7 @@
                     ORDER BY coalesce(bpv.blog_post_views_cnt, 0) DESC
                 </when>
                 <when test='orderType.equals("reply")'>
-                    ORDER BY coalesce(bpl.blog_post_comment_cnt, 0) DESC
+                    ORDER BY coalesce(bpc.blog_post_comment_cnt, 0) DESC
                 </when>
             </choose>
         </if>
