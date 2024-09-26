@@ -5,23 +5,41 @@
     <!--    블로그 정보 조회   -->
     <select id="selectBlogInfo" resultType="blogInfoVO"  parameterType="blogReqVO">
         SELECT
-            blog_id
-            , user_id
-            , blog_nm
-            , blog_con
-            , del_yn
-            , rgsn_user_id
-            , rgsn_ts
-            , amnn_user_id
-            , amnn_ts
+            A.blog_id
+            , A.user_id
+            , A.blog_nm
+            , A.blog_con
+            , A.del_yn
+            , A.rgsn_user_id
+            , A.rgsn_ts
+            , A.amnn_user_id
+            , A.amnn_ts
+            , coalesce(B.total_blog_views_cnt, 0) AS total_blog_views_cnt
+            , coalesce(C.today_blog_views_cnt, 0) AS today_blog_views_cnt
 
-        FROM blog_info_m
+        FROM blog_info_m A
 
-        WHERE blog_id = #{blogId}
+        /* 블로그 전체 방문자 수 */
+        LEFT JOIN (
+            SELECT blog_id, COUNT(0) AS total_blog_views_cnt
+            FROM blog_views_l
+            GROUP BY blog_id
+        ) B ON B.blog_id = A.blog_id
+
+        /* 블로그 오늘 방문자 수 */
+        LEFT JOIN (
+            SELECT blog_id, COUNT(0) AS today_blog_views_cnt
+            FROM blog_views_l
+            WHERE DATE_TRUNC('day', rgsn_ts) = CURRENT_DATE
+            GROUP BY blog_id
+        ) C ON C.blog_id = A.blog_id
+
+
+        WHERE A.blog_id = #{blogId}
 
     </select>
 
-    <!--    회원 정보 변경    -->
+    <!--    블로그 정보 변경    -->
     <update id="updateBlogInfo" parameterType="BlogSaveReqVO">
         UPDATE
             blog_info_m
@@ -34,5 +52,31 @@
         WHERE 1 = 1
         AND user_id = #{userId}
     </update>
+
+    <!--  블로그 방문자 중복 체크 -->
+    <select id="checkBlogViewed" parameterType="BlogSaveReqVO" resultType="boolean">
+        SELECT COUNT(1)
+        FROM blog_views_l
+        WHERE blog_id = #{blogId}
+          AND rgsn_user_id = #{userId}
+    </select>
+
+    <!--  블로그 방문자 추가  -->
+    <insert id="insertBlogView" parameterType="BlogSaveReqVO">
+        INSERT INTO blog_views_l
+        (
+          blog_views_id
+        , blog_id
+        , rgsn_user_id
+        , rgsn_ts
+        )
+        VALUES
+            (
+              #{userId}
+            , #{blogId}
+            , #{userId}
+            , CURRENT_TIMESTAMP
+            )
+    </insert>
 
 </mapper>

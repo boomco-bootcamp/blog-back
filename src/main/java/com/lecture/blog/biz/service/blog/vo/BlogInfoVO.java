@@ -36,5 +36,11 @@ public class BlogInfoVO {
     // 수정 일시
     private Timestamp amnnTs;
 
+    // 전체 방문자
+    private String totalBlogViewsCnt;
+    // 오늘 방문자
+    private String todayBlogViewsCnt;
+
+
 
 }
