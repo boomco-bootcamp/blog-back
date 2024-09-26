@@ -46,12 +46,54 @@
         </if>
     </select>
 
-    <!--    스터디 댓글 카운트 조회   -->
+    <!--    게시글 댓글 카운트 조회   -->
     <select id="selectPostCommentListCnt" parameterType="string" resultType="int">
         SELECT COUNT(0)
         FROM blog_post_comment_l
         WHERE 1 = 1
             AND blog_post_id = #{blogPostId}
     </select>
+
+
+    <!--    게시글 댓글 작성   -->
+    <insert id="insertPostComment" parameterType="CommentSaveReqVO">
+        INSERT INTO blog_post_comment_l
+        (
+          blog_post_comment_id
+        , blog_post_id
+        , blog_comment_con
+        , blog_parent_comment_id
+        , del_yn
+        , rgsn_user_id
+        , rgsn_ts
+        , amnn_user_id
+        , amnn_ts
+
+        )
+        VALUES
+            (
+              #{blogCommentId}
+            , #{blogPostId}
+            , #{blogCommentCon}
+            , #{blogParentCommentId}
+            , 'N'
+            , #{rgsnUserId}
+            , CURRENT_TIMESTAMP
+            , #{amnnUserId}
+            , CURRENT_TIMESTAMP
+            )
+    </insert>
+
+    <!--    스터디 댓글 삭제   -->
+    <update id="deletePostComment" parameterType="CommentSaveReqVO">
+        UPDATE
+            blog_post_comment_l
+        SET
+            del_yn = 'Y'
+          , amnn_user_id = #{amnnUserId}
+          , amnn_ts = CURRENT_TIMESTAMP
+        WHERE 1 = 1
+          AND blog_post_comment_id = #{blogCommentId}
+    </update>
 
 </mapper>

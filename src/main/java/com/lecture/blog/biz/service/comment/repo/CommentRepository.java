@@ -15,4 +15,10 @@ public interface CommentRepository {
     // 게시글 댓글 카운트 조회
     int selectPostCommentListCnt(@Param("blogPostId")String blogPostId);
 
+    // 게시글 댓글 작성
+    int insertPostComment(CommentSaveReqVO reqVO);
+
+    // 게시글 댓글 삭제
+    int deletePostComment(CommentSaveReqVO reqVO);
+
 }

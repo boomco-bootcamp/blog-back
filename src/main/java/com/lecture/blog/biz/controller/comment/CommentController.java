@@ -6,6 +6,8 @@ import com.lecture.blog.biz.service.comon.vo.PagingListVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -34,5 +36,45 @@ public class CommentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    /**
+     * 게시글 댓글 작성
+     * @param saveReqVO
+     * @return
+     */
+    @PostMapping("/post/save")
+    public ResponseEntity savePostComment(@RequestBody CommentSaveReqVO saveReqVO, @AuthenticationPrincipal User user) {
+        try {
+            if(user == null) throw new Exception("로그인이 필요한 서비스 입니다.");
+            saveReqVO.setRgsnUserId(user.getUsername());
+            saveReqVO.setAmnnUserId(user.getUsername());
+            int result = commentService.savePostComment(saveReqVO);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * 게시글 댓글 삭제
+     * @param saveReqVO
+     * @return
+     */
+    @PostMapping("/post/delete")
+    public ResponseEntity deletePostComment(@RequestBody CommentSaveReqVO saveReqVO, @AuthenticationPrincipal User user) {
+        try {
+            if(user == null) throw new Exception("로그인이 필요한 서비스 입니다.");
+            saveReqVO.setRgsnUserId(user.getUsername());
+            saveReqVO.setAmnnUserId(user.getUsername());
+            int result = commentService.deletePostComment(saveReqVO);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
 
 }
