@@ -118,6 +118,10 @@ public class PostServiceImpl implements PostService {
 
                     // 중복되지 않은 경우에만 조회수 추가
                     if (!checkPostView) {
+                        // UUID 발급
+                        String blogPostViewId = UUID.randomUUID().toString();
+                        reqVO.setBlogPostViewId(blogPostViewId);
+
                         postRepository.insertPostView(reqVO);
                     }
                 }

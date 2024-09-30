@@ -26,6 +26,9 @@ public class SpringSecurityFilter {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
+        // CORS 설정 추가
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
         http.addFilterBefore(loginFilter, UsernamePasswordAuthenticationFilter.class);
 
         //경로별 권한 추가(인가)

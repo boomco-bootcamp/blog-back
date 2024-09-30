@@ -37,5 +37,8 @@ public class PostReqVO extends PageVO {
      */
     // 유저 ID
     private String userId;
+    // 게시글 조회수 ID
+    private String blogPostViewId;
+
     
 }

@@ -72,7 +72,7 @@
         )
         VALUES
             (
-              #{userId}
+              #{blogViewId}
             , #{blogId}
             , #{userId}
             , CURRENT_TIMESTAMP
