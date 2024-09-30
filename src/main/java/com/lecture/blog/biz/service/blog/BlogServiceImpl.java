@@ -47,6 +47,10 @@ public class BlogServiceImpl implements BlogService {
 
                 // 중복되지 않은 경우에만 방문자 추가
                 if (!checkBlogView) {
+                    // UUID 발급
+                    String blogViewId = UUID.randomUUID().toString();
+                    reqVO.setBlogViewId(blogViewId);
+
                     blogRepository.insertBlogView(reqVO);
                 }
             }

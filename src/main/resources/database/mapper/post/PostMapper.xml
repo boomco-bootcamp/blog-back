@@ -263,7 +263,7 @@
         )
         VALUES
             (
-              #{userId}
+              #{blogPostViewId}
             , #{blogPostId}
             , #{userId}
             , CURRENT_TIMESTAMP
