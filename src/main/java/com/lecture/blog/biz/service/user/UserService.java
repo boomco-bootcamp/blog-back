@@ -1,9 +1,6 @@
 package com.lecture.blog.biz.service.user;
 
-import com.lecture.blog.biz.service.user.vo.LoginReqVO;
-import com.lecture.blog.biz.service.user.vo.UserInfoVO;
-import com.lecture.blog.biz.service.user.vo.UserReqVO;
-import com.lecture.blog.biz.service.user.vo.UserSaveReqVO;
+import com.lecture.blog.biz.service.user.vo.*;
 
 public interface UserService {
 
@@ -62,4 +59,12 @@ public interface UserService {
      * @throws Exception
      */
     int deleteUserInfo(String userId) throws Exception;
+
+    /**
+     * 패스워드 찾기(임시 패스워드 발급)
+     * @param reqVO
+     * @return
+     * @throws Exception
+     */
+    int findPassword(UserFindReqVO reqVO) throws Exception;
 }

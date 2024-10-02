@@ -5,10 +5,7 @@ import com.lecture.blog.app.utils.JwtTokenUtil;
 import com.lecture.blog.biz.service.sns.kakao.KakaoService;
 import com.lecture.blog.biz.service.sns.kakao.vo.KakaoUserInfoVO;
 import com.lecture.blog.biz.service.user.repo.UserRepository;
-import com.lecture.blog.biz.service.user.vo.LoginReqVO;
-import com.lecture.blog.biz.service.user.vo.UserInfoVO;
-import com.lecture.blog.biz.service.user.vo.UserReqVO;
-import com.lecture.blog.biz.service.user.vo.UserSaveReqVO;
+import com.lecture.blog.biz.service.user.vo.*;
 import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -246,6 +243,52 @@ public class UserServiceImpl implements UserService {
         try {
             int result = userRepository.deleteUserInfo(userId);
             return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * 패스워드 찾기(임시 패스워드 발급)
+     * @param reqVO
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int findPassword(UserFindReqVO reqVO) throws Exception {
+        try {
+            // 입력 받은 ID, 이메일 파라메터 체크
+            if(StringUtils.isBlank(reqVO.getUserId()) && StringUtils.isBlank(reqVO.getUserEml())) {
+                throw new Exception("아이디 혹은 이메일을 입력해주세요");
+            }
+
+            // 입력 받은 메일 체크
+            UserReqVO userReqVO = new UserReqVO();
+            userReqVO.setUserId(reqVO.getUserId());
+            UserInfoVO userInfoVO = this.searchUserInfo(userReqVO);
+            // 회원정보 체크
+            if(userInfoVO == null) throw new Exception("해당 유저가 존재하지 않습니다.");
+            // 등록한 이메일과 입력 받은 이메일 일치 확인
+            if(!userInfoVO.getUserEml().equals(reqVO.getUserEml())) throw new Exception("아이디 혹은 이메일을 확인해주세요.");
+
+            // 임시 패드워드 발급 후, 유저 정보 변경
+            String tempPw = RandomStringUtils.randomAlphanumeric(20);
+            UserSaveReqVO saveReqVO = new UserSaveReqVO();
+            saveReqVO.setUserId(userInfoVO.getUserId());
+            saveReqVO.setUserPswd(tempPw);
+            saveReqVO.setUserNm(userInfoVO.getUserNm());
+            saveReqVO.setUserEml(userInfoVO.getUserEml());
+            saveReqVO.setUserTel(userInfoVO.getUserTel());
+            saveReqVO.setUserSnsType(userInfoVO.getUserSnsType());
+            saveReqVO.setUserSnsId(userInfoVO.getUserSnsId());
+            this.updateUserInfo(saveReqVO);
+
+            // 임시 패스워드 이메일 발송
+
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

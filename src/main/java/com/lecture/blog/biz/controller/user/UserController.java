@@ -1,10 +1,7 @@
 package com.lecture.blog.biz.controller.user;
 
 import com.lecture.blog.biz.service.user.UserService;
-import com.lecture.blog.biz.service.user.vo.LoginReqVO;
-import com.lecture.blog.biz.service.user.vo.UserInfoVO;
-import com.lecture.blog.biz.service.user.vo.UserReqVO;
-import com.lecture.blog.biz.service.user.vo.UserSaveReqVO;
+import com.lecture.blog.biz.service.user.vo.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -140,6 +137,22 @@ public class UserController {
     public ResponseEntity deleteUserInfo(@AuthenticationPrincipal User user) {
         try {
             int result = userService.deleteUserInfo(user.getUsername());
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * 패스워드 찾기(임시 패스워드 발급)
+     * @param reqVO
+     * @return
+     */
+    @PostMapping("/find")
+    public ResponseEntity findPassword(@RequestBody UserFindReqVO reqVO) {
+        try {
+            int result = userService.findPassword(reqVO);
             return ResponseEntity.ok().body(result);
         } catch (Exception e) {
             log.error(e.getMessage());

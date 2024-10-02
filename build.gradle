@@ -47,6 +47,9 @@ dependencies {
     // google gson
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
 
+    // mail
+    implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
+
     // DB SSH CONNECT
     implementation 'com.jcraft:jsch:0.1.55'
 

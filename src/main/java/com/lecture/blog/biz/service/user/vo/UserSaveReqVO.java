@@ -1,5 +1,7 @@
 package com.lecture.blog.biz.service.user.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.apache.ibatis.type.Alias;
 
