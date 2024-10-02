@@ -1,5 +1,6 @@
 package com.lecture.blog.biz.service.user.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.apache.ibatis.type.Alias;
 
@@ -25,6 +26,7 @@ public class UserInfoVO {
     private String userTel;
 
     // 유저 SNS_ID
+    @JsonIgnore
     private String userSnsId;
 
     // 유저 SNS_TYPE

@@ -2,6 +2,8 @@ package com.lecture.blog.biz.service.user;
 
 import com.lecture.blog.app.utils.EncryptionUtils;
 import com.lecture.blog.app.utils.JwtTokenUtil;
+import com.lecture.blog.biz.service.sns.kakao.KakaoService;
+import com.lecture.blog.biz.service.sns.kakao.vo.KakaoUserInfoVO;
 import com.lecture.blog.biz.service.user.repo.UserRepository;
 import com.lecture.blog.biz.service.user.vo.LoginReqVO;
 import com.lecture.blog.biz.service.user.vo.UserInfoVO;
@@ -9,8 +11,11 @@ import com.lecture.blog.biz.service.user.vo.UserReqVO;
 import com.lecture.blog.biz.service.user.vo.UserSaveReqVO;
 import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * 스터디 유저 관련 서비스 Impl
@@ -23,9 +28,12 @@ public class UserServiceImpl implements UserService {
 
     private final JwtTokenUtil jwtTokenUtil;
 
-    public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
+    private final KakaoService kakaoService;
+
+    public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, KakaoService kakaoService) {
         this.userRepository = userRepository;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.kakaoService = kakaoService;
     }
 
     /**
@@ -57,6 +65,86 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtTokenUtil.makeJwt(userInfo.getUserId());
 
         return jwt;
+    }
+
+    /**
+     * 로그인 for kakao
+     * @param kakaoCode
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public String loginKakao(String kakaoCode) throws Exception {
+        try {
+
+            String jwt = "";
+
+            // 카카오 code 로 accessToken 발급
+            String accessToken = kakaoService.getAccessToken(kakaoCode);
+
+            // 발급 받은 accessToken 으로 kakao 유저정보 조회
+            KakaoUserInfoVO kakaoUserInfo = kakaoService.getUserInfo(accessToken);
+
+            // kakao 유저 정보 파라메터 체크
+            if(StringUtils.isBlank(kakaoUserInfo.getId())) throw new Exception("회원 정보가 존재하지 않습니다.");
+
+            // 해당 유저가 회원 가입이 되어있는지 체크
+            UserReqVO reqVO = new UserReqVO();
+            reqVO.setUserSnsId(kakaoUserInfo.getId());
+            reqVO.setUserSnsType("kakao");
+            UserInfoVO userInfoVO = userRepository.selectUserInfoForSNS(reqVO);
+
+            // 회원 가입이 되어있는 경우, jwt 토큰 발급
+            if(userInfoVO != null) {
+                jwt = jwtTokenUtil.makeJwt(userInfoVO.getUserId());
+            }
+
+            // 회원 가입이 되어있지 않은 경우, 회원 가입 후, jwt 토큰 발급
+            else {
+                // 회원 가입
+                UserSaveReqVO saveReqVO = new UserSaveReqVO();
+                // 랜덤 문자, 숫자 ID 생성
+                String generatedString = RandomStringUtils.randomAlphanumeric(15);
+                saveReqVO.setUserId(generatedString);
+                saveReqVO.setUserNm(kakaoUserInfo.getNickname());
+                saveReqVO.setUserSnsId(kakaoUserInfo.getId());
+                saveReqVO.setUserSnsType("kakao");
+
+                int insertResult = userRepository.insertUserInfo(saveReqVO);
+                if(insertResult != 1) throw new Exception("카카오 회원연동에 실패했습니다.");
+
+                // 유저 정보 재조회
+                userInfoVO = userRepository.selectUserInfoForSNS(reqVO);
+                jwt = jwtTokenUtil.makeJwt(userInfoVO.getUserId());
+            }
+
+            return jwt;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * 로그아웃 for kakao
+     * @param kakaoCode
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public int logoutKakao(String kakaoCode) throws Exception {
+        try {
+            // 카카오 code 로 accessToken 발급
+            String accessToken = kakaoService.getAccessToken(kakaoCode);
+
+            kakaoService.logout(accessToken);
+
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     /**

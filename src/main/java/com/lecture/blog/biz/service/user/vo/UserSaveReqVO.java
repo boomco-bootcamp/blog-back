@@ -22,5 +22,5 @@ public class UserSaveReqVO {
     // 유저 SNS_TYPE
     private String userSnsType;
     // 시스템 관리자 여부
-    private String sysAdmYn;
+    private String sysAdmYn = "N";
 }

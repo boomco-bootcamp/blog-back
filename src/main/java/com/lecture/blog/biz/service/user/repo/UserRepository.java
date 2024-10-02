@@ -25,4 +25,9 @@ public interface UserRepository {
     // 블로그 정보 생성
     int insertBlogInfo (BlogSaveReqVO blogSaveReqVO);
 
+    /**************************************************
+     * SNS 로그인 관련 repo
+     **************************************************/
+    // SNS 연동 유저 조회
+    UserInfoVO selectUserInfoForSNS(UserReqVO reqVO);
 }

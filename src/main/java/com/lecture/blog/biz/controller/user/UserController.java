@@ -47,13 +47,45 @@ public class UserController {
     }
 
     /**
+     * 로그인 for kakao
+     * @param loginReqVO
+     * @return
+     */
+    @PostMapping("/login/kakao")
+    public ResponseEntity loginKakao(@RequestBody LoginReqVO loginReqVO) {
+        try {
+            // 유저 ID 패스워드 받아서 JWT 토큰 생성
+            String jwtToken = userService.loginKakao(loginReqVO.getCode());
+            return ResponseEntity.ok().body(jwtToken);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * 로그아웃 for kakao
+     * @param loginReqVO
+     * @return
+     */
+    @PostMapping("/logout/kakao")
+    public ResponseEntity logoutKakao(@RequestBody LoginReqVO loginReqVO) {
+        try {
+            int result = userService.logoutKakao(loginReqVO.getCode());
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
      * 유저 정보 조회
      * @return
      */
     @PostMapping("/info")
     public ResponseEntity searchUserInfo(@AuthenticationPrincipal User user) {
         try {
-
             // 로그인 체크
             if(user == null) {return ResponseEntity.badRequest().body("로그인이 필요한 서비스 입니다.");}
 

@@ -16,6 +16,22 @@ public interface UserService {
     String login(LoginReqVO loginReqVO) throws Exception;
 
     /**
+     * 로그인 for kakao
+     * @param kakaoCode
+     * @return
+     * @throws Exception
+     */
+    String loginKakao(String kakaoCode) throws Exception;
+
+    /**
+     * 로그아웃 for kakao
+     * @param kakaoCode
+     * @return
+     * @throws Exception
+     */
+    int logoutKakao(String kakaoCode) throws Exception;
+
+    /**
      * 유저 정보 조회
      * @param reqVO
      * @return
