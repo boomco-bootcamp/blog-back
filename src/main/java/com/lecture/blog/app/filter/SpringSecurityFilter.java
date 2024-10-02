@@ -1,5 +1,5 @@
 package com.lecture.blog.app.filter;
-
+import java.util.List;
 import com.lecture.blog.app.utils.JwtTokenUtil;
 import com.lecture.blog.biz.service.user.UserService;
 import org.springframework.context.annotation.Bean;
@@ -57,6 +57,8 @@ public class SpringSecurityFilter {
         //개발용 csrf 설정 해제
         http
                 .csrf((auth) -> auth.disable());
+        // cors and csrf set
+        http.cors(c -> c.configurationSource(corsConfigurationSource()));
 
         return http.build();
     }
@@ -67,22 +69,13 @@ public class SpringSecurityFilter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://192.168.0.174:3000", "http://localhost:3000")); // 허용할 출처
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 메서드
+        configuration.setAllowedHeaders(List.of("*")); // 허용할 헤더
+        configuration.setAllowCredentials(true); // 자격 증명 허용
 
-
-        // Local
-        configuration.addAllowedOriginPattern("http://localhost:3000");
-        configuration.addAllowedOriginPattern("https://localhost:3000");
-
-        configuration.addAllowedOriginPattern("http://localhost:3000");
-        configuration.addAllowedOriginPattern("https://localhost:3000");
-
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true);
-        configuration.addExposedHeader("Content-Disposition");
-        configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정
         return source;
     }
 }
