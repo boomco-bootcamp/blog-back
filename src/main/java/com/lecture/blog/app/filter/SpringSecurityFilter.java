@@ -72,13 +72,26 @@ public class SpringSecurityFilter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://192.168.0.174:3000", "http://localhost:3000")); // 허용할 출처
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 허용할 메서드
-        configuration.setAllowedHeaders(List.of("*")); // 허용할 헤더
-        configuration.setAllowCredentials(true); // 자격 증명 허용
 
+        // 로컬
+        configuration.addAllowedOriginPattern("http://localhost:3000");
+        configuration.addAllowedOriginPattern("https://localhost:3000");
+
+        // 운영
+//        configuration.addAllowedOriginPattern("http://3.34.41.77:7501");
+//        configuration.addAllowedOriginPattern("https://3.34.41.77:7501");
+
+        // 개발 환경 서버
+//        configuration.addAllowedOriginPattern("http://192.168.0.174:3000");
+//        configuration.addAllowedOriginPattern("https://192.168.0.174:3000");
+
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedHeader("*");
+        configuration.setAllowCredentials(true);
+        configuration.addExposedHeader("Content-Disposition");
+        configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 CORS 설정
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }
