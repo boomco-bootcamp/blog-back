@@ -15,15 +15,15 @@ public class MailServiceImpl implements MailService {
      */
     @Override
     public void mailSend(MailSendVO mailSendVO) throws Exception {
-        SimpleMailMessage
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(mailDto.getAddress());
-        message.setSubject(mailDto.getTitle());
-        message.setText(mailDto.getMessage());
-        message.setFrom("wisejohn950330@gmail.com");
-        message.setReplyTo("wisejohn950330@gmail.com");
-
-        System.out.println("message"+message);
-        javaMailSender.send(message);
+//        SimpleMailMessage
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(mailDto.getAddress());
+//        message.setSubject(mailDto.getTitle());
+//        message.setText(mailDto.getMessage());
+//        message.setFrom("wisejohn950330@gmail.com");
+//        message.setReplyTo("wisejohn950330@gmail.com");
+//
+//        System.out.println("message"+message);
+//        javaMailSender.send(message);
     }
 }

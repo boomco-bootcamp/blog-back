@@ -285,7 +285,7 @@ public class UserServiceImpl implements UserService {
             this.updateUserInfo(saveReqVO);
 
             // 임시 패스워드 이메일 발송
-
+            return 0;
 
 
 
