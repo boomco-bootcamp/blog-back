@@ -18,7 +18,7 @@ jwt:
   expiredTime : 86400000
 
 file :
-  path : /file/upload/
+  path : /home/ubuntu/file/upload/
   #path : C:/IdeaProjects/boomcoLabs/blog/file
 
 # USER
