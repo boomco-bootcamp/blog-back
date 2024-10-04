@@ -2,6 +2,8 @@ package com.lecture.blog.biz.service.user;
 
 import com.lecture.blog.app.utils.EncryptionUtils;
 import com.lecture.blog.app.utils.JwtTokenUtil;
+import com.lecture.blog.biz.service.mail.MailService;
+import com.lecture.blog.biz.service.mail.vo.MailSendVO;
 import com.lecture.blog.biz.service.sns.kakao.KakaoService;
 import com.lecture.blog.biz.service.sns.kakao.vo.KakaoUserInfoVO;
 import com.lecture.blog.biz.service.user.repo.UserRepository;
@@ -27,10 +29,13 @@ public class UserServiceImpl implements UserService {
 
     private final KakaoService kakaoService;
 
-    public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, KakaoService kakaoService) {
+    public final MailService mailService;
+
+    public UserServiceImpl(UserRepository userRepository, JwtTokenUtil jwtTokenUtil, KakaoService kakaoService, MailService mailService) {
         this.userRepository = userRepository;
         this.jwtTokenUtil = jwtTokenUtil;
         this.kakaoService = kakaoService;
+        this.mailService = mailService;
     }
 
     /**
@@ -285,9 +290,43 @@ public class UserServiceImpl implements UserService {
             this.updateUserInfo(saveReqVO);
 
             // 임시 패스워드 이메일 발송
-            return 0;
+            MailSendVO mailSendVO = new MailSendVO();
+            mailSendVO.setTo(userInfoVO.getUserEml());
+            mailSendVO.setSubject("블로그 프로젝트 임시 패스워드 발급");
 
+            // 이메일 발송 내용
+            String emailHtml = "<html>\n" +
+                    "<head>\n" +
+                    "<title>임시 패스워드 발급</title>\n" +
+                    "<style>\n" +
+                    "    body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }\n" +
+                    "    .container { background-color: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }\n" +
+                    "    h2 { color: #333; }\n" +
+                    "    p { font-size: 16px; color: #555; }\n" +
+                    "    .password { font-weight: bold; font-size: 20px; color: #007bff; }\n" +
+                    "    .footer { margin-top: 20px; font-size: 12px; color: #aaa; }\n" +
+                    "</style>\n" +
+                    "</head>\n" +
+                    "<body>\n" +
+                    "<div class='container'>\n" +
+                    "    <h2>안녕하세요!</h2>\n" +
+                    "    <p>귀하의 요청에 따라 임시 패스워드가 발급되었습니다.</p>\n" +
+                    "    <p>임시 패스워드: <span class='password'>" + tempPw + "</span></p>\n" +
+                    "    <p>로그인 후 반드시 패스워드를 변경해 주시기 바랍니다.</p>\n" +
+                    "    <p>감사합니다.</p>\n" +
+                    "</div>\n" +
+                    "<div class='footer'>\n" +
+                    "    &copy; 2024 웅진 프로젝트. 모든 권리 보유.\n" +
+                    "</div>\n" +
+                    "</body>\n" +
+                    "</html>";
 
+            mailSendVO.setContent(emailHtml);
+            mailSendVO.setHtmlFlg(true);
+
+            mailService.mailSend(mailSendVO);
+
+            return 1;
 
         } catch (Exception e) {
             e.printStackTrace();
