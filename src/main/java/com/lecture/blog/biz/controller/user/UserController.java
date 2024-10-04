@@ -23,9 +23,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    // TODO 파일 업로드
-    // TODO 마이페이지 서비스 추가
-
     /**
      * 로그인
      * @param loginReqVO

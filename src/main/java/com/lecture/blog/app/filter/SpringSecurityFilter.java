@@ -78,12 +78,12 @@ public class SpringSecurityFilter {
         configuration.addAllowedOriginPattern("https://localhost:3000");
 
         // 운영
-//        configuration.addAllowedOriginPattern("http://3.34.41.77:7501");
-//        configuration.addAllowedOriginPattern("https://3.34.41.77:7501");
+        configuration.addAllowedOriginPattern("http://3.34.41.77:7501");
+        configuration.addAllowedOriginPattern("https://3.34.41.77:7501");
 
         // 개발 환경 서버
-//        configuration.addAllowedOriginPattern("http://192.168.0.174:3000");
-//        configuration.addAllowedOriginPattern("https://192.168.0.174:3000");
+        configuration.addAllowedOriginPattern("http://192.168.0.174:3000");
+        configuration.addAllowedOriginPattern("https://192.168.0.174:3000");
 
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
