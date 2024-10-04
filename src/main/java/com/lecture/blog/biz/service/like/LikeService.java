@@ -13,4 +13,12 @@ public interface LikeService {
      */
     int savePostLike(LikeSaveReqVO reqVO) throws Exception;
 
+    /**
+     * 게시글 좋아요 체크
+     * @param reqVO
+     * @return
+     * @throws Exception
+     */
+    boolean checkPostLike(LikeSaveReqVO reqVO) throws Exception;
+
 }

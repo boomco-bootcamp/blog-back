@@ -40,4 +40,22 @@ public class LikeController {
         }
     }
 
+    /**
+     * 게시글 좋아요 체크
+     * @param saveReqVO
+     * @return
+     */
+    @PostMapping("/post/check")
+    public ResponseEntity savePostCheck(@RequestBody LikeSaveReqVO saveReqVO, @AuthenticationPrincipal User user) {
+        try {
+            saveReqVO.setRgsnUserId(user.getUsername());
+            boolean result = likeService.checkPostLike(saveReqVO);
+            return ResponseEntity.ok().body(result);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
 }
