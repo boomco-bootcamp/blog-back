@@ -34,15 +34,13 @@ public class SpringSecurityFilter {
         //경로별 권한 추가(인가)
         http
                 .authorizeHttpRequests((auth) -> auth
-                                //.requestMatchers("/", "/login").permitAll()
-//                        .requestMatchers("/login").permitAll()
-//                        .requestMatchers("/admin").hasRole("ADMIN")
-//                        .requestMatchers("my/**").hasAnyRole("ADMIN","USER")
-//                        .anyRequest().authenticated()
-                                .requestMatchers("/api/user/info").hasAnyAuthority("ADMIN","USER")
-                                .requestMatchers("/api/user/delete").hasAnyAuthority("ADMIN","USER")
-                                .anyRequest().permitAll()
-
+                        // 유저 정보 관련 서비스
+                        .requestMatchers("/api/user/info").hasAnyAuthority("ADMIN","USER")
+                        .requestMatchers("/api/user/delete").hasAnyAuthority("ADMIN","USER")
+                        // 파일 관련 서비스
+                        .requestMatchers("/api/file/upload").hasAnyAuthority("ADMIN","USER")
+                        //.anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
 
 //        //로그인 페이지로 이동시키기

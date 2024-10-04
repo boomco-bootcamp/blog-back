@@ -32,7 +32,6 @@ public class TagVO {
 	// 수정 사용자 ID
 	private String amnnUserId;
 
-
 	// 수정 일시
 	private String amnnTs;
 }

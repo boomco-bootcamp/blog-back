@@ -17,6 +17,9 @@ jwt:
   # 밀리초 -> 24시간
   expiredTime : 86400000
 
+file :
+  path : /file/upload/
+  #path : C:/IdeaProjects/boomcoLabs/blog/file
 
 # USER
 spring:
