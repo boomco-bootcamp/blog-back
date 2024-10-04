@@ -43,6 +43,25 @@ public class LikeServiceImpl implements LikeService {
         }
     }
 
+    /**
+     * 게시글 좋아요 체크
+     * @param reqVO
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public boolean checkPostLike(LikeSaveReqVO reqVO) throws Exception {
+        try {
+            // 좋아요 여부 확인
+            Boolean isLikeChecked = likeRepository.isPostLike(reqVO);
+
+            return isLikeChecked != null && isLikeChecked;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
 
 
 }
