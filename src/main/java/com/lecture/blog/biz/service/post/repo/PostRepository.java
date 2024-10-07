@@ -21,7 +21,7 @@ public interface PostRepository {
     int selectPostInfoTotal(PostReqVO reqVO);
 
     // 게시글 상세 정보 조회
-    PostResVO selectPostInfo(@Param("blogPostId")String blogPostId);
+    PostResVO selectPostInfo(@Param("blogPostId")String blogPostId, @Param("userId")String userId);
 
     // 게시글 조회수 체크
     boolean checkPostViewed(PostReqVO reqVO);

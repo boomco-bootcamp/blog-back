@@ -1,23 +1,26 @@
 package com.lecture.blog.biz.service.like;
 
-import com.lecture.blog.biz.service.comment.CommentService;
 import com.lecture.blog.biz.service.comon.vo.PagingListVO;
 import com.lecture.blog.biz.service.like.repo.LikeRepository;
+import com.lecture.blog.biz.service.like.vo.LikeReqVO;
 import com.lecture.blog.biz.service.like.vo.LikeSaveReqVO;
+import com.lecture.blog.biz.service.post.vo.PostResVO;
+import com.lecture.blog.biz.service.tag.TagService;
+import com.lecture.blog.biz.service.tag.vo.TagVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service("LikeService")
 public class LikeServiceImpl implements LikeService {
 
     private final LikeRepository likeRepository;
+    private final TagService tagService;
 
-    public LikeServiceImpl(LikeRepository likeRepository) {
+    public LikeServiceImpl(LikeRepository likeRepository, TagService tagService) {
         this.likeRepository = likeRepository;
+        this.tagService = tagService;
     }
-
 
     /**
      * 게시글 좋아요 추가
@@ -62,6 +65,31 @@ public class LikeServiceImpl implements LikeService {
         }
     }
 
+    /**
+     * 관심 게시글 목록 조회
+     * @param reqVO
+     * @return
+     */
+    @Override
+    public PagingListVO<PostResVO> searchMyPostLikeList(LikeReqVO reqVO) throws Exception {
+        try {
+            List<PostResVO> resultList = likeRepository.selectMyPostLikeList(reqVO);
+
+            int totalCnt = likeRepository.selectMyPostLikeTotal(reqVO);
+
+            // 게시글 태그 조회
+            for(PostResVO x : resultList){
+                List<TagVO> tagList = tagService.searchTagList(x.getBlogPostId());
+                x.setTagList(tagList);
+            }
+
+            return new PagingListVO(reqVO, resultList, totalCnt);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
 
 }

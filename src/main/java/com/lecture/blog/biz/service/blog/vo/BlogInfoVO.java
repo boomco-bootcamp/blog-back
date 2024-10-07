@@ -36,6 +36,9 @@ public class BlogInfoVO {
     // 수정 일시
     private Timestamp amnnTs;
 
+    // 블로그 배너 파일 ID
+    private String blogBannerFileId;
+
     // 전체 방문자
     private String totalBlogViewsCnt;
     // 오늘 방문자

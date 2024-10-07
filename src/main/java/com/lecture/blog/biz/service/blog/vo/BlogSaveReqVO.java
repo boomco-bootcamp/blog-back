@@ -23,6 +23,9 @@ public class BlogSaveReqVO extends PageVO {
     // 블로그 소개
     private String blogCon;
 
+    // 블로그 배너 파일 ID
+    private String blogBannerFileId;
+
     // 삭제 여부
     private String delYn;
 

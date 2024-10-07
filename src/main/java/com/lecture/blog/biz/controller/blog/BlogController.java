@@ -62,8 +62,6 @@ public class BlogController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
 }
 
 

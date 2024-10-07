@@ -14,6 +14,7 @@
             , A.rgsn_ts
             , A.amnn_user_id
             , A.amnn_ts
+            , A.blog_banner_file_id
             , coalesce(B.total_blog_views_cnt, 0) AS total_blog_views_cnt
             , coalesce(C.today_blog_views_cnt, 0) AS today_blog_views_cnt
 
@@ -46,6 +47,7 @@
         SET
         blog_nm       = #{blogNm}
         , blog_con      = #{blogCon}
+        , blog_banner_file_id = #{blogBannerFileId}
         , amnn_user_id  = #{userId}
         , amnn_ts       = CURRENT_TIMESTAMP
 

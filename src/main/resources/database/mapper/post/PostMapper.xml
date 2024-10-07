@@ -25,6 +25,10 @@
             bi.blog_nm,
             U.user_nm AS blog_user_nm
 
+            <if test="userId != null and !userId.equals('')">
+                , CASE WHEN lk.user_id IS NULL THEN 'N' ELSE 'Y' END AS like_yn
+            </if>
+
         FROM blog_post_l bp
 
         /* 게시글 카테고리 정보 */
@@ -45,7 +49,6 @@
             SELECT blog_post_id, COUNT(0) AS blog_post_like_cnt FROM blog_post_like_l GROUP BY blog_post_id
         ) bpl ON bpl.blog_post_id = bp.blog_post_id
 
-
         /* 게시글 태그 목록 */
         LEFT JOIN (
             SELECT blog_post_id
@@ -64,6 +67,11 @@
 
         /* 블로그 게시글 작성자 정보 */
         LEFT JOIN blog_user_info_m U ON U.user_id = bi.user_id
+
+        /* 좋아요 여부 */
+        <if test="userId != null and !userId.equals('')">
+            LEFT JOIN blog_post_like_l lk ON lk.blog_post_id = bp.blog_post_id AND lk.user_id = #{userId}
+        </if>
 
         WHERE 1 = 1
         AND bp.del_yn ='N'
@@ -176,6 +184,10 @@
              , coalesce(D.blog_post_comment_cnt, 0) AS post_comment_cnt
              , coalesce(E.blog_post_like_cnt, 0) AS post_like_cnt
 
+            <if test="userId != null and !userId.equals('')">
+                , CASE WHEN lk.user_id IS NULL THEN 'N' ELSE 'Y' END AS like_yn
+            </if>
+
         FROM blog_post_l A
 
         /* 게시글 카테고리 정보 */
@@ -205,6 +217,11 @@
 
         /* 블로그 게시글 작성자 정보 */
         LEFT JOIN blog_user_info_m G ON G.user_id = F.user_id
+
+        /* 좋아요 여부 */
+        <if test="userId != null and !userId.equals('')">
+            LEFT JOIN blog_post_like_l lk ON lk.blog_post_id = A.blog_post_id AND lk.user_id = #{userId}
+        </if>
 
 
         WHERE 1 = 1

@@ -93,7 +93,7 @@ public class PostServiceImpl implements PostService {
             if(StringUtils.isBlank(reqVO.getBlogPostId())) return new PostResVO();
 
             // 게시글 상세 정보 조회
-            PostResVO result = postRepository.selectPostInfo(reqVO.getBlogPostId());
+            PostResVO result = postRepository.selectPostInfo(reqVO.getBlogPostId(), reqVO.getUserId());
 
 
             if (result != null) {

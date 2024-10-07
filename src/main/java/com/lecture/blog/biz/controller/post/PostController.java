@@ -30,8 +30,11 @@ public class PostController {
      * @return
      */
     @GetMapping("/list")
-    public ResponseEntity searchPostInfoList(PostReqVO reqVO) {
+    public ResponseEntity searchPostInfoList(PostReqVO reqVO, @AuthenticationPrincipal User user) {
         try {
+            if (user != null) {
+                reqVO.setUserId(user.getUsername());
+            }
             PagingListVO<PostResVO> resultList = postService.searchPostInfoList(reqVO);
             return ResponseEntity.ok().body(resultList);
         } catch (Exception e) {

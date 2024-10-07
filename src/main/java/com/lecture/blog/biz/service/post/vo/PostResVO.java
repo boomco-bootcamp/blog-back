@@ -73,4 +73,7 @@ public class PostResVO {
 
     // 총 좋아요 수
     private int postLikeCnt;
+
+    // 좋아요 여부
+    private String likeYn = "N";
 }
