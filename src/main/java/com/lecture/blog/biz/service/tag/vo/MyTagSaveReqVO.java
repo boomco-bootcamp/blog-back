@@ -7,7 +7,7 @@ import org.apache.ibatis.type.Alias;
 @Alias("MyTagSaveReqVO")
 public class MyTagSaveReqVO {
 
-    // 스터디 관심 태그 목록 ID
+    // 블로그 관심 태그 목록 ID
     private String blogLikeTagId;
 
     // 유저 ID

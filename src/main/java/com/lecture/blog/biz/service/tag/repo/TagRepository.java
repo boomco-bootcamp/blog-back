@@ -17,7 +17,7 @@ public interface TagRepository {
     // 게시글 태그 저장
     int insertPostTag(TagVO tagVO);
 
-    // 스터디 태그 삭제
+    // 블로그 태그 삭제
     int deletePostTag(TagVO tagVO);
 
     /**************************************************

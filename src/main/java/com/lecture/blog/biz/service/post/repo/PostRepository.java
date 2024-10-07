@@ -29,13 +29,13 @@ public interface PostRepository {
     // 게시글 조회수 추가
     int insertPostView(PostReqVO reqVO);
 
-    // 스터디 정보 작성
+    // 블로그 정보 작성
     int insertPostInfo(PostSaveReqVO saveReqVO);
 
-    // 스터디 정보 수정
+    // 블로그 정보 수정
     int updatePostInfo(PostSaveReqVO saveReqVO);
 
-    // 스터디 정보 삭제
+    // 블로그 정보 삭제
     int deletePostInfo(PostSaveReqVO saveReqVO);
 
 

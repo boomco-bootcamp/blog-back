@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 /**
- * 스터디 유저 관련 서비스 Impl
+ * 블로그 유저 관련 서비스 Impl
  */
 @Slf4j
 @Service("UserService")

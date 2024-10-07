@@ -19,7 +19,7 @@ public class TagServiceImpl implements TagService {
     }
 
     /**
-     * 스터디 태그 목록 조회
+     * 블로그 태그 목록 조회
      * @param blogPostId
      * @return
      * @throws Exception
@@ -70,7 +70,7 @@ public class TagServiceImpl implements TagService {
     }
 
     /**
-     * 스터디 태그 삭제
+     * 블로그 태그 삭제
      * @param tag
      * @return
      * @throws Exception
