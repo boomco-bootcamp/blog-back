@@ -96,4 +96,32 @@
           AND blog_post_comment_id = #{blogCommentId}
     </update>
 
+    <!--    내 게시글 댓글 조회 -->
+    <select id="selectMyPostCommentList" parameterType="map" resultType="MyPostCommentResVO">
+        SELECT
+            A.blog_post_comment_id
+            , A.blog_post_id
+            , A.blog_comment_con
+            , A.del_yn
+            , A.rgsn_user_id
+            , RGSN.user_nm AS rgsn_user_nm
+            , A.rgsn_ts
+            , A.amnn_user_id
+            , AMNN.user_nm AS amnn_user_nm
+            , A.amnn_ts
+            , B.blog_post_title
+        FROM blog_post_comment_l A
+
+        /* 등록/수정 사용자 정보 */
+        LEFT JOIN blog_user_info_m RGSN ON RGSN.user_id = A.rgsn_user_id
+        LEFT JOIN blog_user_info_m AMNN ON AMNN.user_id = A.amnn_user_id
+
+        INNER JOIN blog_post_l B ON B.blog_post_id = A.blog_post_id
+        INNER JOIN blog_info_m C ON C.blog_id = B.blog_id AND C.user_id = #{userId}
+
+        ORDER BY A.rgsn_ts
+
+        LIMIT #{limit}
+    </select>
+
 </mapper>

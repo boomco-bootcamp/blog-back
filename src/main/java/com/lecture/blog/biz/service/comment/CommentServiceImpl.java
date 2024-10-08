@@ -5,8 +5,7 @@ import com.lecture.blog.biz.service.comment.vo.*;
 import com.lecture.blog.biz.service.comon.vo.PagingListVO;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service("CommentService")
 public class CommentServiceImpl implements CommentService {
@@ -75,6 +74,25 @@ public class CommentServiceImpl implements CommentService {
     public int deletePostComment(CommentSaveReqVO reqVO) throws Exception {
         try {
             return commentRepository.deletePostComment(reqVO);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * 내 게시글 댓글 조회
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<MyPostCommentResVO> searchMyPostCommentList(String userId, int limit) {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("userId", userId);
+            map.put("limit", limit);
+            List<MyPostCommentResVO> resultList = commentRepository.selectMyPostCommentList(map);
+            return resultList;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

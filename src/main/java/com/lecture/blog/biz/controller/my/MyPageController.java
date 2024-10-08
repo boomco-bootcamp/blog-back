@@ -4,6 +4,8 @@ import com.lecture.blog.biz.service.category.CategoryService;
 import com.lecture.blog.biz.service.category.vo.CategoryVO;
 import com.lecture.blog.biz.service.category.vo.MyCategoryReqVO;
 import com.lecture.blog.biz.service.category.vo.MyCategorySaveReqVO;
+import com.lecture.blog.biz.service.comment.CommentService;
+import com.lecture.blog.biz.service.comment.vo.MyPostCommentResVO;
 import com.lecture.blog.biz.service.comon.vo.PagingListVO;
 import com.lecture.blog.biz.service.like.LikeService;
 import com.lecture.blog.biz.service.like.vo.LikeReqVO;
@@ -28,13 +30,14 @@ public class MyPageController {
     private final LikeService likeService;
     private final TagService tagService;
     private final CategoryService categoryService;
+    private final CommentService commentService;
 
-    public MyPageController(LikeService likeService, TagService tagService, CategoryService categoryService) {
+    public MyPageController(LikeService likeService, TagService tagService, CategoryService categoryService, CommentService commentService) {
         this.likeService = likeService;
         this.tagService = tagService;
         this.categoryService = categoryService;
+        this.commentService = commentService;
     }
-
 
     /**
      * 관심 카테고리 목록 조회
@@ -147,6 +150,23 @@ public class MyPageController {
             return ResponseEntity.ok(resultList);
         } catch (Exception e) {
             log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * 내 게시글 댓글 조회(최근 10)
+     * @param user
+     * @return
+     */
+    @GetMapping("/post/comment/list")
+    public ResponseEntity searchMyPostCommentList(@AuthenticationPrincipal User user) {
+        try {
+            if(user == null) throw new Exception("로그인이 필요한 서비스 입니다.");
+            List<MyPostCommentResVO> resultList = commentService.searchMyPostCommentList(user.getUsername(), 10);
+            return ResponseEntity.ok(resultList);
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

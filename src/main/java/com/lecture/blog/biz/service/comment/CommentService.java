@@ -3,6 +3,8 @@ package com.lecture.blog.biz.service.comment;
 import com.lecture.blog.biz.service.comment.vo.*;
 import com.lecture.blog.biz.service.comon.vo.PagingListVO;
 
+import java.util.List;
+
 public interface CommentService {
 
     /**
@@ -28,6 +30,13 @@ public interface CommentService {
      * @throws Exception
      */
     int deletePostComment(CommentSaveReqVO reqVO) throws Exception;
+
+    /**
+     * 내 게시글 댓글 조회
+     * @param userId
+     * @return
+     */
+    List<MyPostCommentResVO> searchMyPostCommentList(String userId, int limit);
 
 
 

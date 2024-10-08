@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface CommentRepository {
@@ -20,5 +21,8 @@ public interface CommentRepository {
 
     // 게시글 댓글 삭제
     int deletePostComment(CommentSaveReqVO reqVO);
+
+    // 내 게시글 댓글 조회
+    List<MyPostCommentResVO> selectMyPostCommentList(Map<String, Object> map);
 
 }
