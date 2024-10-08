@@ -312,4 +312,47 @@
           AND blog_post_id = #{blogPostId}
     </update>
 
+    <!--    블로그 게시글 방문자 수 통계    -->
+    <select id="selectPostViewList" parameterType="string" resultType="PostViewResVO">
+        WITH date_range AS (
+            SELECT
+                CURRENT_DATE - INTERVAL '6 days' + INTERVAL '1 day' * n AS visit_date
+        FROM generate_series(0, 6) AS n
+            )
+
+        SELECT *
+        FROM (
+                 SELECT
+                     TO_CHAR(dr.visit_date, 'YYYY-MM-DD') AS view_date
+                      , COALESCE(COUNT(v.blog_post_id), 0) AS view_cnt
+                      , v.blog_post_id
+                 FROM date_range dr
+                 LEFT join blog_post_views_l v ON DATE(v.rgsn_ts) = dr.visit_date
+        GROUP BY dr.visit_date, v.blog_post_id
+        ORDER BY dr.visit_date
+            )
+        WHERE blog_post_id = #{blogPostId} OR blog_post_id IS NULL
+    </select>
+
+    <!--    블로그 게시글 좋아요 수 통계    -->
+    <select id="selectPostLikeList" parameterType="string" resultType="PostLikeResVO">
+        WITH date_range AS (
+            SELECT
+                CURRENT_DATE - INTERVAL '6 days' + INTERVAL '1 day' * n AS visit_date
+        FROM generate_series(0, 6) AS n
+            )
+        SELECT *
+        FROM (
+                 SELECT
+                     TO_CHAR(dr.visit_date, 'YYYY-MM-DD') AS like_date
+                      , COALESCE(COUNT(v.blog_post_id), 0) AS like_cnt
+                      , v.blog_post_id
+                 FROM date_range dr
+                 LEFT join blog_post_like_l v ON DATE(v.rgsn_ts) = dr.visit_date
+        GROUP BY dr.visit_date, v.blog_post_id
+        ORDER BY dr.visit_date
+            )
+        WHERE blog_post_id = #{blogPostId} OR blog_post_id IS NULL
+    </select>
+
 </mapper>

@@ -1,10 +1,8 @@
 package com.lecture.blog.biz.service.blog;
 
-import com.lecture.blog.biz.service.blog.vo.BlogInfoVO;
-import com.lecture.blog.biz.service.comon.vo.PagingListVO;
-import com.lecture.blog.biz.service.blog.vo.BlogReqVO;
-import com.lecture.blog.biz.service.blog.vo.BlogResVO;
-import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
+import com.lecture.blog.biz.service.blog.vo.*;
+
+import java.util.List;
 
 
 /**
@@ -27,6 +25,14 @@ public interface BlogService {
      * @throws Exception
      */
     int updateBlogInfo(BlogSaveReqVO saveReqVO) throws Exception;
+
+    /**
+     * 블로그 방문자수 통계
+     * @param blogId
+     * @return
+     * @throws Exception
+     */
+    List<BlogViewResVO> searchBlogViewList(String blogId) throws Exception;
 
 
 

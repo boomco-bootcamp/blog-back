@@ -4,7 +4,7 @@ import com.lecture.blog.biz.service.blog.vo.BlogReqVO;
 import com.lecture.blog.biz.service.blog.vo.BlogInfoVO;
 import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
 
-import com.lecture.blog.biz.service.post.vo.PostReqVO;
+import com.lecture.blog.biz.service.blog.vo.BlogViewResVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,5 +28,8 @@ public interface BlogRepository {
 
     // 블로그 방문자 추가
     int insertBlogView(BlogReqVO saveReqVO);
+
+    // 블로그 방문자 통계
+    List<BlogViewResVO> selectBlogViewList(@Param("blogId")String blogId);
 
 }

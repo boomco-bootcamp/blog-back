@@ -1,17 +1,18 @@
 package com.lecture.blog.biz.controller.post;
 
 import com.lecture.blog.biz.service.post.PostService;
-import com.lecture.blog.biz.service.post.vo.PostReqVO;
-import com.lecture.blog.biz.service.post.vo.PostResVO;
-import com.lecture.blog.biz.service.post.vo.PostSaveReqVO;
+import com.lecture.blog.biz.service.post.vo.*;
 import com.lecture.blog.biz.service.comon.vo.PagingListVO;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -119,8 +120,37 @@ public class PostController {
         }
     }
 
+    /**
+     * 블로그 게시글 방문자 수 통계
+     * @param blogPostId
+     * @return
+     */
+    @GetMapping("view/list")
+    public ResponseEntity searchPostViewList(@RequestParam("blogPostId") String blogPostId) {
+        try {
+            List<PostViewResVO> resultList = postService.searchPostViewList(blogPostId);
+            return ResponseEntity.ok().body(resultList);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
-
+    /**
+     * 블로그 게시글 좋아요 수 통계
+     * @param blogPostId
+     * @return
+     */
+    @GetMapping("/like/list")
+    public ResponseEntity searchPostLikeList(@RequestParam("blogPostId") String blogPostId) {
+        try {
+            List<PostLikeResVO> resultList = postService.searchPostLikeList(blogPostId);
+            return ResponseEntity.ok().body(resultList);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
 
 

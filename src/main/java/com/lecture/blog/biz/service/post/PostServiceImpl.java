@@ -2,25 +2,20 @@ package com.lecture.blog.biz.service.post;
 
 import com.lecture.blog.biz.service.comment.CommentService;
 import com.lecture.blog.biz.service.comment.CommentServiceImpl;
+import com.lecture.blog.biz.service.post.vo.*;
 import com.lecture.blog.biz.service.tag.TagService;
 
-import com.lecture.blog.biz.service.post.vo.PostReqVO;
-import com.lecture.blog.biz.service.post.vo.PostResVO;
-import com.lecture.blog.biz.service.post.vo.PostSaveReqVO;
 import com.lecture.blog.biz.service.comon.vo.PagingListVO;
 import com.lecture.blog.biz.service.tag.vo.TagVO;
 import com.lecture.blog.biz.service.comment.vo.CommentResVO;
 import com.lecture.blog.biz.service.comment.vo.CommentReqVO;
-import com.lecture.blog.biz.service.comment.vo.CommentSaveReqVO;
 
 import com.lecture.blog.biz.service.post.repo.PostRepository;
 import com.lecture.blog.biz.service.comment.repo.CommentRepository;
-import com.lecture.blog.biz.service.comment.CommentServiceImpl;
 
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -210,6 +205,40 @@ public class PostServiceImpl implements PostService {
             tagService.deleteTag(tagVO);
 
             return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * 블로그 게시글 방문자 수 통계
+     * @param blogPostId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<PostViewResVO> searchPostViewList(String blogPostId) throws Exception {
+        try {
+            List<PostViewResVO> resultList = postRepository.selectPostViewList(blogPostId);
+            return resultList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    /**
+     * 블로그 게시글 좋아요 수 통계
+     * @param blogPostId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<PostLikeResVO> searchPostLikeList(String blogPostId) throws Exception {
+        try {
+            List<PostLikeResVO> resultList = postRepository.selectPostLikeList(blogPostId);
+            return resultList;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

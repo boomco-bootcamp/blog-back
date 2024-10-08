@@ -1,9 +1,9 @@
 package com.lecture.blog.biz.service.post;
 
-import com.lecture.blog.biz.service.post.vo.PostReqVO;
-import com.lecture.blog.biz.service.post.vo.PostResVO;
-import com.lecture.blog.biz.service.post.vo.PostSaveReqVO;
+import com.lecture.blog.biz.service.post.vo.*;
 import com.lecture.blog.biz.service.comon.vo.PagingListVO;
+
+import java.util.List;
 
 /**
  * 게시글 관련 서비스
@@ -42,6 +42,22 @@ public interface PostService {
      * @throws Exception
      */
     int deletePostInfo(PostSaveReqVO saveReqVO) throws Exception;
+
+    /**
+     * 블로그 게시글 방문자 수 통계
+     * @param blogPostId
+     * @return
+     * @throws Exception
+     */
+    List<PostViewResVO> searchPostViewList(String blogPostId) throws Exception;
+
+    /**
+     * 블로그 게시글 좋아요 수 통계
+     * @param blogPostId
+     * @return
+     * @throws Exception
+     */
+    List<PostLikeResVO> searchPostLikeList(String blogPostId) throws Exception;
 
 
 }

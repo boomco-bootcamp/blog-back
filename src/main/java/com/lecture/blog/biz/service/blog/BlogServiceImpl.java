@@ -1,15 +1,12 @@
 package com.lecture.blog.biz.service.blog;
 
-import com.lecture.blog.app.utils.EncryptionUtils;
-
 import com.lecture.blog.biz.service.blog.repo.BlogRepository;
 
 import com.lecture.blog.biz.service.blog.vo.BlogReqVO;
 import com.lecture.blog.biz.service.blog.vo.BlogInfoVO;
 import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
-import com.lecture.blog.biz.service.user.vo.UserReqVO;
+import com.lecture.blog.biz.service.blog.vo.BlogViewResVO;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,7 +71,23 @@ public class BlogServiceImpl implements BlogService {
         try {
             int result = blogRepository.updateBlogInfo(saveReqVO);
             return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
+    /**
+     * 블로그 방문자수 통계
+     * @param blogId
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public List<BlogViewResVO> searchBlogViewList(String blogId) throws Exception {
+        try {
+            List<BlogViewResVO> resultList = blogRepository.selectBlogViewList(blogId);
+            return resultList;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

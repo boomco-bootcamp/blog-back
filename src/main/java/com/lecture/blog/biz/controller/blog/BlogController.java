@@ -1,19 +1,16 @@
 package com.lecture.blog.biz.controller.blog;
 
-import com.lecture.blog.biz.service.blog.vo.BlogInfoVO;
-import com.lecture.blog.biz.service.comon.vo.PagingListVO;
+import com.lecture.blog.biz.service.blog.vo.*;
 import com.lecture.blog.biz.service.blog.BlogService;
-import com.lecture.blog.biz.service.blog.vo.BlogReqVO;
-import com.lecture.blog.biz.service.blog.vo.BlogResVO;
-import com.lecture.blog.biz.service.blog.vo.BlogSaveReqVO;
 
-import com.lecture.blog.biz.service.post.vo.PostReqVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -62,6 +59,23 @@ public class BlogController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    /**
+     * 블로그 방문자수 통계
+     * @param blogId
+     * @return
+     */
+    @GetMapping("/view/list")
+    public ResponseEntity searchBlogViewList(@RequestParam("blogId") String blogId) {
+        try {
+            List<BlogViewResVO> resultList = blogService.searchBlogViewList(blogId);
+            return ResponseEntity.ok().body(resultList);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }
 
 

@@ -1,8 +1,6 @@
 package com.lecture.blog.biz.service.post.repo;
 
-import com.lecture.blog.biz.service.post.vo.PostReqVO;
-import com.lecture.blog.biz.service.post.vo.PostResVO;
-import com.lecture.blog.biz.service.post.vo.PostSaveReqVO;
+import com.lecture.blog.biz.service.post.vo.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -38,8 +36,9 @@ public interface PostRepository {
     // 블로그 정보 삭제
     int deletePostInfo(PostSaveReqVO saveReqVO);
 
+    // 블로그 게시글 방문자 수 통계
+    List<PostViewResVO> selectPostViewList(@Param("blogPostId") String blogPostId);
 
-
-
-
+    // 블로그 게시글 좋아요 수 통계
+    List<PostLikeResVO> selectPostLikeList(@Param("blogPostId") String blogPostId);
 }
