@@ -2,6 +2,9 @@
 server:
   port: 8080
   address: 0.0.0.0
+  front:
+    url : http://3.34.41.77:7501
+    #url: http://localhost:3000
 
 #log level
 logging:

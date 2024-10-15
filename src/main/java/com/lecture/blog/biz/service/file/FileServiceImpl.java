@@ -103,7 +103,7 @@ public class FileServiceImpl implements FileService {
             String fileId = UUID.randomUUID().toString();
 
             // 현재는 uploadPath/날짜/아이디 로
-            String folderPath = makeFolder(path, fileId);
+            String folderPath = this.makeFolder(path, fileId);
 
             // 저장 파일명 처리
             String savePath = this.combineFilePath(folderPath, fileName);

@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.lecture.blog.biz.service.sns.kakao.vo.KakaoUserInfoVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -13,12 +14,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Service
 public class KakaoServiceImpl implements KakaoService {
+
+    @Value("${server.front.url}")
+    private String frontUrl;
 
     /**
      * 카카오 로그인 accessToken 요청
@@ -42,7 +44,7 @@ public class KakaoServiceImpl implements KakaoService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&code=").append(code);
-            sb.append("&redirect_uri=http://localhost:3000/kakao/oauth");
+            sb.append("&redirect_uri=" + frontUrl + "/kakao/oauth");
             sb.append("&client_id=c2ec02b1a4a4dd0703212355b5fdf186");
 
             bw.write(sb.toString());
